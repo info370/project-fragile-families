@@ -1,0 +1,56 @@
+---
+title: "Pilot Study"
+output: html_document
+---
+
+## R Markdown
+
+#load all datasets
+```{r cars}
+ffmerged1 <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/ALLMERGED_pub.dta')
+
+ffmerged2 <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ff_pub_merge2.dta')
+
+ffmombaseline <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ffmombspv3.dta')
+
+ffdadbaseline <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ffdadbspv3.dta')
+
+ffmom1yr<- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ffmom1ypv2.dta')
+
+ffdad1yr <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ffdad1ypv2.dta')
+
+ffmom3yr <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ffmom3ypv2.dta')
+
+ffdad3yr <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ffdad3ypv2.dta')
+
+ffmom5yr <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ffmom5ypv1.dta')
+
+ffdad5yr <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ffdad5ypv1.dta')
+
+ff9yr <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ff_y9_pub1.dta')
+```
+
+#view all datasets
+```{r cars}
+View(ffmerged1)
+
+View(ffmerged2)
+
+View(ffmombaseline)
+
+View(ffdadbaseline)
+
+View(ffmom1yr)
+
+View(ffdad1yr)
+
+View(ffmom3yr)
+
+View(ffdad3yr)
+
+View(ffmom5yr)
+
+View(ffdad5yr)
+
+View(ff9yr)
+```
