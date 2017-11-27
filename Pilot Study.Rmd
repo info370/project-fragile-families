@@ -28,11 +28,15 @@ ffmom5yr <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project
 ffdad5yr <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ffdad5ypv1.dta')
 
 ff9yr <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ff_y9_pub1.dta')
+
+ffinhome3yr <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/InHome3yr.dta')
+
+ffinhome5yr <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/inhome5yr2011.dta')
 ```
 
 #view all datasets
 ```{r cars}
-View(ffmerged1)
+utils::View(ffmerged1)
 
 View(ffmerged2)
 
@@ -53,4 +57,8 @@ View(ffmom5yr)
 View(ffdad5yr)
 
 View(ff9yr)
+
+View(ffinhome3yr)
+
+View(ffinhome5yr)
 ```
