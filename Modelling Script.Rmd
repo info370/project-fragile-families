@@ -1,0 +1,108 @@
+---
+title: "Modelling Script"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+library(caret)
+control <- trainControl(method="repeatedcv", number = 5, repeats = 1)
+library(ggplot2)
+
+install.packages("dummies")
+require(dummies)
+model <- train(f5k10d ~ t5c13c, data=testYear9, method ="knn", preProcess = "scale", trControl = control)
+
+View(testYear9$f5k10d)
+
+View(testYear9$t5c13c)
+
+
+View(testYear5)
+
+testYear5 <- head(year5, 100)
+
+
+testYear9 <- head(year9, 100)
+
+some.testYear9 <- select(year9, m5k14e, t5c13c) %>% filter(m5k14e > -1, t5c13c > -1, m5k14e < 7, t5c13c < 7)
+
+other.testYear9 <- select(year9, t5c13c) %>%  filter(t5c13c > -1, t5c13c < 7)
+
+View(other.testYear9)
+
+View(some.testYear9)
+
+ggplot(some.testYear9, aes(t5c13c, m5k14e)) + geom_point() + geom_jitter(width = .05)
+
+dummyMath <- dummy(other.testYear9$t5c13c)
+
+View(dummyMath)
+
+colnames(dummyMath)
+
+colnames(dummyMath)[1] <- "far below average"
+colnames(dummyMath)[2] <- "below average"
+colnames(dummyMath)[3] <- "average"
+colnames(dummyMath)[4] <- "above average"
+colnames(dummyMath)[5] <- "far above average"
+
+colnames(dummyMath)
+require(dplyr)
+  reduced.df <- df[,col] <- apply(df[,col], 1, filter_(greaterthan0(df[col])))
+
+
+reduced.df <- Filter(greaterthan0, testYear9[,'f5k14d'])
+
+onlyTwo <- filter(year9, f5k14d >= 0, t5c13c >= 0)
+View(onlyTwo)
+
+dummyVideoGame <- RemoveBlank_Dummy(onlyTwo, 'f5k14d')
+
+dummyMath <- RemoveBlank_Dummy(onlyTwo, 't5c13c')
+
+RemoveBlank_Dummy <- function(df, col) {
+  reduced.df <- select(df, idnum, col)
+  reduced.df <- filter(reduced.df, reduced.df[,col] >= 0)
+  View(reduced.df)
+  dummyFrame <- dummy(reduced.df[[col]])
+  return(dummyFrame)
+}
+
+
+View(dummyMath)
+
+model <- train(dummyVideoGame[onlyTwo1] ~ ., data=onlyTwo, method ="knn", preProcess = "scale", trControl = control)
+
+
+require(caret)
+View(dummyVideoGame)
+
+filter?
+
+
+RemoveBlank_Dummy <- function(df, col) {
+  df[,col] <- apply(df[,col], margin = 1, Filter(greaterthan0, df[,col]))
+  dummyFrame <- dummy(df[[col]])
+  return(dummyFrame)
+}
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
