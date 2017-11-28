@@ -1,0 +1,128 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
+
+
+```{r}
+install.packages("haven")
+library(haven)
+library(dplyr)
+
+ffdataset <- read_dta('/Users/eunicewu/Documents/INFO370/fragile_families/ALLMERGED_pub.dta')
+utils::View(ffdataset)
+
+```
+
+```{r}
+baseline <- read.csv(file = '/Users/eunicewu/Documents/INFO370/project-fragile-families/data/Baseline_Features.csv')
+```
+
+```{r}
+year1 <- read.csv(file = '/Users/eunicewu/Documents/INFO370/project-fragile-families/data/Year1_Features.csv')
+```
+
+```{r}
+year3 <- read.csv(file = '/Users/eunicewu/Documents/INFO370/project-fragile-families/data/Year3_Features.csv')
+```
+
+```{r}
+year5 <- read.csv(file = '/Users/eunicewu/Documents/INFO370/project-fragile-families/data/Year5_Features.csv')
+```
+
+```{r}
+year9 <- read.csv(file = '/Users/eunicewu/Documents/INFO370/project-fragile-families/data/Year9_Features.csv')
+```
+
+```{r}
+#feature selection
+
+if(!require(mlbench)){install.packages("mlbench"); require(mlbench)} # common datasets to use
+if(!require(caret)){install.packages("caret", dependencies = c("Depends", "Suggests")); require(caret)} # ML package and its dependencies. This will take awhile!
+if(!require(dplyr)){install.packages("dplyr"); require(dplyr)}
+set.seed(370)
+install.packages("ModelMetrics")
+install.packages("recipes")
+install.packages("DEoptimR")
+```
+
+```{r}
+View(combined)
+combined <- left_join(year1,year9, by = "idnum") 
+combined <- left_join(combined,year3, by = "idnum")
+combined <- left_join(year1,year3,year5, by = "idnum") 
+combined <- left_join(combined, year9, by = "idnum") %>% dplyr::select(m2b18a,m2b18b,m2b18c,m2b18d,m2b18e,m2b18f,m2b18g,m2b18h,m3b4a,m3b4b,m3b4c,m3b4d,m3b4e,m3b4f,m3b4g,m3b4h,m3b4i,m3b4k,m3b4l,m4b4a,m4b4a1,m4b4a2,m4b4a3,m4b4a4,m4b4a5,m4b4a6,m4b4a7,m4b4a8,m4c3a,m4c3b,m4c3c,m4c3d,m4c3e,m4c3f,m4c3g,m4c3h,t5c13a,t5c13b,t5c13c)
+
+
+## Jared
+View(year9)
+combine1 <- year1 %>% select(idnum,m2b18a,m2b18b,m2b18c,m2b18d,m2b18e,m2b18f,m2b18g,m2b18h) %>% filter(m2b18a>-1,m2b18b>-1,m2b18c>-1,m2b18d>-1,m2b18e>-1,m2b18f>-1,m2b18g>-1,m2b18h>-1)
+combine3 <- year3 %>% select(idnum,m3b4a,m3b4b,m3b4c,m3b4d,m3b4e,m3b4f,m3b4g,m3b4h,m3b4i,m3b4k,m3b4l) %>% 
+  filter(m3b4a>-1,m3b4b>-1,m3b4c>-1,m3b4d>-1,m3b4e>-1,m3b4f>-1,m3b4g>-1,m3b4h>-1,m3b4i>-1,m3b4k>-1,m3b4l>-1)
+combine5 <- year5 %>% select(idnum,m4b4a1,m4b4a2,m4b4a3,m4b4a4,m4b4a5,m4b4a6,m4b4a7,m4b4a8,m4c3a,m4c3b,m4c3c,m4c3d,m4c3e,m4c3f,m4c3g,m4c3h) %>% 
+  filter(m4b4a1>-1,m4b4a2>-1,m4b4a3>-1,m4b4a4>-1,m4b4a5>-1,m4b4a6>-1,m4b4a7>-1,m4b4a8>-1,m4c3a>-1,m4c3b>-1,m4c3c>-1,m4c3d>-1,m4c3e>-1,m4c3f>-1,m4c3g>-1,m4c3h>-1)
+combine9 <- year9 %>% select(idnum,t5c13a,t5c13b,t5c13c) %>% 
+  filter(t5c13a>-1,t5c13b>-1,t5c13c>-1)
+#combined <- left_join(combine1,combine3,combine5,combine9, by = "idnum")
+
+combined1 <- inner_join(combine1,combine3)
+combined2 <- inner_join(combine5,combine9)
+combined <- inner_join(combined1, combined2)
+
+combined$t5c13a <- as.factor(combined$t5c13a)
+combined$t5c13b <- as.factor(combined$t5c13b)
+combined$t5c13c <- as.factor(combined$t5c13c)
+
+train$Reverse <- as.factor(train$Reverse)
+
+test <- year9$t5c13a
+test <- left_join(year1)
+
+
+```
+
+```{r}
+## Automatic Feature Selection
+#*TODO* Use and `rfe` to do automatic feature selection. You'll want to pass in the control provided.
+# control using random forest
+control <- rfeControl(functions = rfFuncs, method="cv", number=5)
+results <- rfe(combined[,2:36], combined[,39], sizes = c(1:35), rfeControl = control) # this will take AWHILE
+View(combined)
+results
+ggplot(results)
+
+# chosen features
+predictors(results)
+```
+
+*TODO*: Select the most important features (up to 10) and use only those parameters moving forward
+
+```{r}
+selected_features <- predictors(results)[1:10] #TODO
+selected_features
+```
+
+
+
+```{r}
+# splitting boston data into train+validate and test sets
+
+split_proportion = 0.8 # specify proportion of data used for training
+```
+
+```{r}
+# select outcome variable
+outcome <- df_baseline %>% dplyr::select(m1b13c)
+
+# randomly select indices for train/validate set
+train_ind <- createDataPartition(outcome$m1b13c, p = split_proportion, list = FALSE)
+df_baseline_train <- df_baseline[train_ind,] # get training data
+df_baseline_test <- df_baseline[train_ind,] # get test data
+
+
+```
+
