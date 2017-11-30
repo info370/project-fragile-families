@@ -34,7 +34,8 @@ testYear5 <- head(year5, 100)
 
 testYear9 <- head(year9, 100)
 
-some.testYear9 <- select(year9, m5k14e, t5c13c) %>% filter(m5k14e > -1, t5c13c > -1, m5k14e < 7, t5c13c < 7)
+
+
 
 other.testYear9 <- select(year9, t5c13c) %>%  filter(t5c13c > -1, t5c13c < 7)
 
@@ -78,10 +79,53 @@ RemoveBlank_Dummy <- function(df, col) {
   return(dummyFrame)
 }
 
+View(fullSet)
+```
 
+```{r}
+
+#put all varaibles as numeric to filter
+names <- c("m1a11b", "m3c3h", "m3b4d", "m4b4a1", "t5c13c")
+fullSet[,names] <- lapply(fullSet[,names], as.numeric) 
+
+#select all survey questions and the outcome variable, filter out negative numbers
+otherDummyVars <- select(fullSet, m1a11b, m3c3h, m3b4d, m4b4a1, t5c13c) %>% filter(f5k14d >= 0, m3c3h >= 0, t5c13c >= 0, t5c13c < 6, m1a11b > 0, m3b4d > 0, m4b4a1 > 0)
+
+View(otherDummyVars)
+
+#isolate the survey questions to be dummyfied
+myDummyVars <- select(otherDummyVars, m1a11b, m3c3h, m3b4d, m4b4a1)
+
+
+#put all variables as factors to dummyfy
+names <- c("m1a11b", "m3c3h", "m3b4d", "m4b4a1")
+myDummyVars[,names] <- lapply(myDummyVars[,names], as.factor)
+
+View(myDummyVars)
+
+#dummyfy the curvey questions. Use the dataframe in which the dummies live (myDummyVars)
+dmy <- dummyVars(~ m1a11b + m3b4d + m4b4a1 + m3c3h, data = myDummyVars)
+
+#make the dummy variables into a dataframe and add the outcome column
+df_dummy <- data.frame(predict(dmy, newdata = myDummyVars), otherDummyVars$t5c13c)
+
+#takes the top 5 columns
+head(df_dummy)
+
+#10 fold cross vaidation repeated 3 times
+control <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
+
+#model the data against the outcome variable that lives in the first "dummy" table made, (otherDummyVars)
+model <- train(otherDummyVars.t5c13c ~ ., data = df_dummy, method = "knn", trControl = control, tuneLength = 20)
+
+model
+
+
+```
+
+```{r}
 View(dummyMath)
 
-model <- train(dummyVideoGame[onlyTwo1] ~ ., data=onlyTwo, method ="knn", preProcess = "scale", trControl = control)
 
 
 require(caret)
@@ -95,6 +139,34 @@ RemoveBlank_Dummy <- function(df, col) {
   dummyFrame <- dummy(df[[col]])
   return(dummyFrame)
 }
+
+baselineYear9 <- inner_join(baseline, year9)
+combine2 <- inner_join(baselineYear9, year1)
+combine3 <- inner_join(combine2, year3)
+combine4 <- inner_join(combine3, year5)
+
+fullSet <- combine4
+
+test.baselineYear9 <- select(combine4, t5c13c, m3c3h) %>% filter(t5c13c > -1, m3c3h > -1, t5c13c < 7)
+View(test.baselineYear9)
+
+x <- select(year9, t5c13c) %>% filter(t5c13c > -1)
+View(x)
+newdf <- table(test.baselineYear9)
+
+View(newdf)
+
+barplot(height = newdf, beside = T, col=c("aquamarine3","coral", "red", "blue", "green"))
+legend("topleft", c("far below average", "below average", "average", "above average", "far above average"), pch=15, 
+       col=c("aquamarine3","coral", "red", "blue", "green"), 
+       bty="n")
+
+ggplot(data = as.data.frame(newdf), aes(m3c3h, t5c13c)) + geom_point() 
+
+linear_model <- lm(t5c13c ~ m3c3h + m1a11b + m3b4d, data=fullSet)
+require(broom)
+parameters <- tidy(linear_model)$estimate
+
 ```
 
 ## Including Plots
