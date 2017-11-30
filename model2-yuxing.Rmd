@@ -13,7 +13,7 @@ install.packages("haven")
 library(haven)
 library(dplyr)
 
-ffdataset <- read_dta('/Users/eunicewu/Documents/INFO370/fragile_families/ALLMERGED_pub.dta')
+ffdataset <- read_dta('/Users/eunicewu/Documents/INFO370/fragile_families_yuxing/ALLMERGED_pub.dta')
 utils::View(ffdataset)
 
 ```
@@ -82,10 +82,9 @@ finalCombined$t5c13c <- as.factor(finalCombined$t5c13c)
 
 ```{r}
 ## Automatic Feature Selection
-#*TODO* Use and `rfe` to do automatic feature selection. You'll want to pass in the control provided.
 # control using random forest
 control <- rfeControl(functions = rfFuncs, method="cv", number=5)
-results <- rfe(finalCombined[,2:54], finalCombined[,57], sizes = c(1:53), rfeControl = control) # this will take AWHILE
+results <- rfe(finalCombined[,2:53], finalCombined[,56], sizes = c(1:52), rfeControl = control) # this will take AWHILE
 results
 ggplot(results)
 
@@ -96,27 +95,25 @@ predictors(results)
 *TODO*: Select the most important features (up to 10) and use only those parameters moving forward
 
 ```{r}
-selected_features <- predictors(results)[1:10] #TODO
+selected_features <- predictors(results)[1:5] 
+selected_features <- predictors(results)[1:10] 
 selected_features
 ```
 
 
+Determine if which features are highly correlated
 
+## Ranking features by importance
+Rank features by importance using K-Nearest Neighbors (KNN). Plot the performance
+- Use a k-fold cross-validation ("repeatedcv") with k=5 folds, repeated 3 times for control.
 ```{r}
-# splitting boston data into train+validate and test sets
+control <- trainControl(method="repeatedcv", number = 5, repeats = 3)
 
-split_proportion = 0.8 # specify proportion of data used for training
+model <- train(idnum ~., data=finalCombined, method = "knn", trControl = control)
+
+importance <- varImp(model)
+
+ggplot(importance)
 ```
 
-```{r}
-# select outcome variable
-outcome <- df_baseline %>% dplyr::select(m1b13c)
-
-# randomly select indices for train/validate set
-train_ind <- createDataPartition(outcome$m1b13c, p = split_proportion, list = FALSE)
-df_baseline_train <- df_baseline[train_ind,] # get training data
-df_baseline_test <- df_baseline[train_ind,] # get test data
-
-
-```
 
