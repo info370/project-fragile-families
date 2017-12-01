@@ -120,6 +120,7 @@ model <- train(otherDummyVars.t5c13c ~ ., data = df_dummy, method = "knn", trCon
 
 model
 
+varImp(model)
 
 ```
 
@@ -139,6 +140,7 @@ RemoveBlank_Dummy <- function(df, col) {
   dummyFrame <- dummy(df[[col]])
   return(dummyFrame)
 }
+require(dplyr)
 
 baselineYear9 <- inner_join(baseline, year9)
 combine2 <- inner_join(baselineYear9, year1)
@@ -147,8 +149,19 @@ combine4 <- inner_join(combine3, year5)
 
 fullSet <- combine4
 
+fullSet2 <- fullSet
+fullSet2[fullSet2 < 0 ] <- NA
+
+View(fullSet2)
+
+```
+
+
+```{r}
+#barplot and scatterplot with densities
 test.baselineYear9 <- select(combine4, t5c13c, m3c3h) %>% filter(t5c13c > -1, m3c3h > -1, t5c13c < 7)
 View(test.baselineYear9)
+
 
 x <- select(year9, t5c13c) %>% filter(t5c13c > -1)
 View(x)
@@ -161,11 +174,14 @@ legend("topleft", c("far below average", "below average", "average", "above aver
        col=c("aquamarine3","coral", "red", "blue", "green"), 
        bty="n")
 
-ggplot(data = as.data.frame(newdf), aes(m3c3h, t5c13c)) + geom_point() 
+ggplot(data = as.data.frame(newdf), aes(m3c3h, t5c13c, size = Freq, color = Freq)) + geom_point() +
+scale_color_gradient(low="blue", high="red") + geom_smooth(method = lm)
 
-linear_model <- lm(t5c13c ~ m3c3h + m1a11b + m3b4d, data=fullSet)
-require(broom)
-parameters <- tidy(linear_model)$estimate
+
+
+linear_model <- lm(t5c13c ~ m3c3h, data=test.baselineYear9)
+ggplot(data = test.baselineYear9, aes(m3c3h, t5c13c)) + geom_point() 
+linear_model
 
 ```
 
