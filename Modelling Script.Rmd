@@ -159,28 +159,92 @@ View(fullSet2)
 
 ```{r}
 #barplot and scatterplot with densities
-test.baselineYear9 <- select(combine4, t5c13c, m3c3h) %>% filter(t5c13c > -1, m3c3h > -1, t5c13c < 7)
+test.baselineYear9 <- select(combine4, t5c13c, m3b4e) %>% filter(t5c13c > -1, m3b4e > -1, t5c13c < 7)
 View(test.baselineYear9)
+
+
+
 
 
 x <- select(year9, t5c13c) %>% filter(t5c13c > -1)
 View(x)
-newdf <- table(test.baselineYear9)
+
+y <- x %>% filter(t5c13c == 3)
+
+y <- x %>% filter(t5c13c == 1, 2, 4, 5)
+
+View(y)
+
+y <- y[1:302]
+
+day1 <- filter(test.baselineYear9, m3b4e == 1)
+dfDay1 <- table(day1)
+
+day2 <- filter(test.baselineYear9, m3b4e == 2)
+dfDay2 <- table(day2)
+
+day3 <- filter(test.baselineYear9, m3b4e == 3)
+dfDay3 <- table(day3)
+
+day4 <- filter(test.baselineYear9, m3b4e == 4)
+dfDay4 <- table(day4)
+
+day5 <- filter(test.baselineYear9, m3b4e == 5)
+dfDay5 <- table(day5)
+
+day6 <- filter(test.baselineYear9, m3b4e == 6)
+dfDay6 <- table(day6)
+
+day7 <- filter(test.baselineYear9, m3b4e == 7)
+dfDay7 <- table(day7)
 
 View(newdf)
 
-barplot(height = newdf, beside = T, col=c("aquamarine3","coral", "red", "blue", "green"))
+View(day1)
+
+par(mfrow=c(3,3))
+
+barplot(height = dfDay1, beside = T, col=c("aquamarine3","coral", "red", "blue", "green"))
 legend("topleft", c("far below average", "below average", "average", "above average", "far above average"), pch=15, 
        col=c("aquamarine3","coral", "red", "blue", "green"), 
        bty="n")
 
-ggplot(data = as.data.frame(newdf), aes(m3c3h, t5c13c, size = Freq, color = Freq)) + geom_point() +
-scale_color_gradient(low="blue", high="red") + geom_smooth(method = lm)
+barplot(height = dfDay2, beside = T, col=c("aquamarine3","coral", "red", "blue", "green"))
+legend("topleft", c("far below average", "below average", "average", "above average", "far above average"), pch=15, 
+       col=c("aquamarine3","coral", "red", "blue", "green"), 
+       bty="n")
+
+barplot(height = dfDay3, beside = T, col=c("aquamarine3","coral", "red", "blue", "green"))
+legend("topleft", c("far below average", "below average", "average", "above average", "far above average"), pch=15, 
+       col=c("aquamarine3","coral", "red", "blue", "green"), 
+       bty="n")
+
+barplot(height = dfDay4, beside = T, col=c("aquamarine3","coral", "red", "blue", "green"))
+legend("topleft", c("far below average", "below average", "average", "above average", "far above average"), pch=15, 
+       col=c("aquamarine3","coral", "red", "blue", "green"), 
+       bty="n")
+
+barplot(height = dfDay5, beside = T, col=c("aquamarine3","coral", "red", "blue", "green"))
+legend("topleft", c("far below average", "below average", "average", "above average", "far above average"), pch=15, 
+       col=c("aquamarine3","coral", "red", "blue", "green"), 
+       bty="n")
+
+barplot(height = dfDay6, beside = T, col=c("aquamarine3","coral", "red", "blue", "green"))
+legend("topleft", c("far below average", "below average", "average", "above average", "far above average"), pch=15, 
+       col=c("aquamarine3","coral", "red", "blue", "green"), 
+       bty="n")
+
+barplot(height = dfDay7, beside = T, col=c("aquamarine3","coral", "red", "blue", "green"))
+legend("topleft", c("far below average", "below average", "average", "above average", "far above average"), pch=15, 
+       col=c("aquamarine3","coral", "red", "blue", "green"), 
+       bty="n")
+
+ggplot(data = as.data.frame(newdf), aes(m3b4e, t5c13c, size = Freq, color = Freq)) + geom_point() +
+scale_color_gradient(low="blue", high="red") 
 
 
 
 linear_model <- lm(t5c13c ~ m3c3h, data=test.baselineYear9)
-ggplot(data = test.baselineYear9, aes(m3c3h, t5c13c)) + geom_point() 
 linear_model
 
 ```
