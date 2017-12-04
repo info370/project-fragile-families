@@ -89,15 +89,21 @@ length <- length(features)
 parent_involvement <- parent_involvement %>% mutate(percentage = tally/11.0)
 
 
+
+library(ggplot2)
 # ## GRAPHS
-# Involvement by math (1-5)
+# Involvement by math
+ggplot(data = parent_involvement, aes(x = t5c13c, y = tally)) + geom_point() + geom_jitter(width = 0.2)
+
+# Involvment by reading
+ggplot(data = parent_involvement, aes(x = t5c13a, y = tally)) + geom_point() + geom_jitter(width = 0.2)
+
+# Involvement by science
+ggplot(data = parent_involvement, aes(x = t5c13b, y = tally)) + geom_point() + geom_jitter(width = 0.2)
 
 
-# Involvment by reading (1-5)
-
-
-# Involvement by science (1-5)
-
+#Involvement total score
+ggplot(data = parent_involvement, aes(x = score, y = percentage)) + geom_point() + geom_jitter(width = 0.2)
 
 
 
