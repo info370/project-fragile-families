@@ -10,7 +10,7 @@ year9 <- read.csv(file="/Users/jaredpraino/Documents/University of Washington/Se
 
 
 ```{r}
-
+temp_parent_involvement <- year9 %>% select(idnum,t5c13a,t5c13b,t5c13c) 
 
 #View(year9)
 
@@ -40,10 +40,11 @@ parent_involvement <- finalCombined %>% mutate(tally = 0)
 # total grade
 parent_involvement <- parent_involvement %>% mutate(score = t5c13a + t5c13b + t5c13c)
 
+
 # add outcome variables
-finalCombined$t5c13a <- as.factor(finalCombined$t5c13a)
-finalCombined$t5c13b <- as.factor(finalCombined$t5c13b)
-finalCombined$t5c13c <- as.factor(finalCombined$t5c13c)
+parent_involvement$t5c13a <- as.factor(parent_involvement$t5c13a)
+parent_involvement$t5c13b <- as.factor(parent_involvement$t5c13b)
+parent_involvement$t5c13c <- as.factor(parent_involvement$t5c13c)
 ```
 
 
@@ -114,26 +115,96 @@ ggplot(data = parent_involvement, aes(x = score, y = percentage)) + geom_point()
 
 ```{r}
 ####    Verison 2: Popularity of all activities in the days/week format
-features <- c('f1g9a',	'f1g9b',	'f1g9c',	'f1g9d',	'f1g9e',	'f1g9',	'f1g9g',	'f1g9h',	'f1g9i',	'f1g9j',	'f1g9k',	'f1g9l','m2b18a',	'm2b18b',	'm2b18c',	'm2b18d',	'm2b18e',	'm2b18f',	'm2b18g',	'm2b18h','m2c3a','m3b4a',	'm3b4b',	'm3b4c',	'm3b4d',	'm3b4e',	'm3b4f',	'm3b4g',	'm3b4h',	'm3b4i',	'm3b4j',	'm3b4k',	'm3b4l',	'm3b4m','m3c3a','m3c3b',	'm3c3c',	'm3c3d',	'm3c3e',	'm3c3f',	'm3c3g',	'm3c3h',	'm3c3i',	'm3c3j',	'm3c3k',	'm3c3l',	'm3c3m','f3c3a',	'f3c3b',	'f3c3c',	'f3c3d',	'f3c3e',	'f3c3f',	'f3c3g',	'f3c3h',	'f3c3i',	'f3c3j',	'f3c3k',	'f3c3l',	'f3c3m','f3b4a',	'f3b4b',	'f3b4c',	'f3b4d',	'f3b4e',	'f3b4f',	'f3b4g',	'f3b4h',	'f3b4i',	'f3b4j',	'f3b4k',	'f3b4l',	'f3b4m','m4c3a',	'm4c3b',	'm4c3c',	'm4c3d',	'm4c3e',	'm4c3f','m4c3g',	'm4c3h','f4b4a1',	'f4b4a2',	'f4b4a3',	'f4b4a4',	'f4b4a5',	'f4b4a6',	'f4b4a7',	'f4b4a8',	'f4c3a',	'f4c3b',	'f4c3c',	'f4c3d',	'f4c3e',	'f4c3f',	'f4c3g',	'f4c3h','f2b36a',	'f2b36b',	'f2b36c',	'f2b36d',	'f2b36e',	'f2b36f',	'f2b36g',	'f2b36h',	'f2c3a',	'f2c3b',	'f2c3c',	'f2c3d',	'f2c3e',	'f2c3f',	'f2c3g',	'f2c3h',	'f2c3i',	'f2c3j','m2c3b',	'm2c3c',	'm2c3d',	'm2c3e',	'm2c3f',	'm2c3g',	'm2c3h',	'm2c3i',	'm2c3j')
-
-parent_involvement2 <- parent_involvement
-parent_invovlement2[parent_involvement2==201] <- 7
-
-# ##  FUNCTIONS
-# convert 
-# -6 to 0
-# apply to c()
-c('m2b28','f2b24','m3b11','f3b11')
 
 
-## convert 
+# total grade
+
+
+# Our predictor variables
+features2 <- c('f1g9a',	'f1g9b',	'f1g9c',	'f1g9d',	'f1g9e',	'f1g9f',	'f1g9g',	'f1g9h',	'f1g9i',	'f1g9j',	'f1g9k',	'f1g9l','m2b18a',	'm2b18b',	'm2b18c',	'm2b18d',	'm2b18e',	'm2b18f',	'm2b18g',	'm2b18h','m2c3a','m3b4a',	'm3b4b',	'm3b4c',	'm3b4d',	'm3b4e',	'm3b4f',	'm3b4g',	'm3b4h',	'm3b4i',	'm3b4j',	'm3b4k',	'm3b4l',	'm3b4m','m3c3a','m3c3b',	'm3c3c',	'm3c3d',	'm3c3e',	'm3c3f',	'm3c3g',	'm3c3h',	'm3c3i',	'm3c3j',	'm3c3k',	'm3c3l',	'm3c3m','f3c3a',	'f3c3b',	'f3c3c',	'f3c3d',	'f3c3e',	'f3c3f',	'f3c3g',	'f3c3h',	'f3c3i',	'f3c3j',	'f3c3k',	'f3c3l',	'f3c3m','f3b4a',	'f3b4b',	'f3b4c',	'f3b4d',	'f3b4e',	'f3b4f',	'f3b4g',	'f3b4h',	'f3b4i',	'f3b4j',	'f3b4k',	'f3b4l',	'f3b4m','m4c3a',	'm4c3b',	'm4c3c',	'm4c3d',	'm4c3e',	'm4c3f','m4c3g',	'm4c3h','f4b4a1',	'f4b4a2',	'f4b4a3',	'f4b4a4',	'f4b4a5',	'f4b4a6',	'f4b4a7',	'f4b4a8',	'f4c3a',	'f4c3b',	'f4c3c',	'f4c3d',	'f4c3e',	'f4c3f',	'f4c3g',	'f4c3h','f2b36a',	'f2b36b',	'f2b36c',	'f2b36d',	'f2b36e',	'f2b36f',	'f2b36g',	'f2b36h',	'f2c3a',	'f2c3b',	'f2c3c',	'f2c3d',	'f2c3e',	'f2c3f',	'f2c3g',	'f2c3h',	'f2c3i',	'f2c3j','m2c3b',	'm2c3c',	'm2c3d',	'm2c3e',	'm2c3f',	'm2c3g',	'm2c3h',	'm2c3i',	'm2c3j')
+
+parent_involvement2 <- read.csv("/Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/FeaturesSelected.csv")
+
+## convert 200's values
 # 201 => 7
 # 202 => 3
 # 203 => 2
 # 204 => 1
 # 205 => 0
+parent_involvement2[parent_involvement2==205] <- 0
+parent_involvement2[parent_involvement2==204] <- 1
+parent_involvement2[parent_involvement2==203] <- 2
+parent_involvement2[parent_involvement2==202] <- 3
+parent_involvement2[parent_involvement2==201] <- 7
+# remove negative values
+parent_involvement2[parent_involvement2<0] <- NA
 
 
+# grades and total grade
+combine9_2 <- year9 %>% select(idnum,t5c13a,t5c13b,t5c13c) %>% 
+  filter(t5c13a>-1,t5c13b>-1,t5c13c>-1)
+combine9_2 <- combine9 %>% mutate(score=t5c13a + t5c13b + t5c13c)
+
+
+combine9_2$t5c13a <- as.factor(combine9_2$t5c13a)
+combine9_2$t5c13b <- as.factor(combine9_2$t5c13b)
+combine9_2$t5c13c <- as.factor(combine9_2$t5c13c)
+combine9_2$score <- as.factor(combine9_2$score)
+
+# merge
+parent_involvement2 <- inner_join(combine9_2, parent_involvement2, by="idnum")
+parent_involvement2 <- parent_involvement2 %>% mutate(tally = 0)
+
+
+
+
+
+
+
+# ##  FUNCTIONS
+# convert 
+# -6 to 0
+# apply to c()
+##c('m2b28','f2b24','m3b11','f3b11')
+
+parent_involvement2 <- parent_involvement3
+
+View(parent_involvement2)
+computed_mean2 <- function(column) {
+   
+  response <- na.omit(parent_involvement2[[column_name]])
+  weighted_mean <- (sum(response==0)*0 + sum(response==1)*1 + sum(response==2)*2 + sum(response==3)*3 + sum(response==4)*4 +       sum(response==5)*5 + sum(response==6)*6 +sum(response==7)*7)/length(response)
+  
+  fltr <- response > weighted_mean
+  parent_involvement2[fltr,"tally"] <- parent_involvement2[fltr,"tally"] + 1
+  print(weighted_mean)
+  return(parent_involvement2)
+}
+
+
+parent_involvement2 <- parent_involvement2[complete.cases(parent_involvement2), ]
+for(i in 1:length(features2)){
+  column_name = features[i]
+  parent_involvement2 <- computed_mean2(column_name)
+}
+
+
+
+parent_involvement2$score
+length <- length(features2)
+parent_involvement2 <- parent_involvement2 %>% mutate(percentage = tally/124.0)
+
+ggplot(data = parent_involvement2, aes(x = t5c13c, y = percentage)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot()
+
+# Involvment by reading
+ggplot(data = parent_involvement2, aes(x = t5c13a, y = percentage)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot()
+
+# Involvement by science
+ggplot(data = parent_involvement2, aes(x = t5c13b, y = percentage)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot()
+
+
+#Involvement total score
+ggplot(data = parent_involvement2, aes(x = score, y = percentage)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot()
 
 
 
