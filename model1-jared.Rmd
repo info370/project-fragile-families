@@ -1,0 +1,95 @@
+Jared
+```{r}
+baseline <- read.csv(file="/Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/Baseline_Features.csv",header=TRUE,sep=",")
+year1 <- read.csv(file="/Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/Year1_Features.csv", header=TRUE,sep=",")
+year3 <- read.csv(file="/Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/Year3_Features.csv",header=TRUE,sep=",")
+year5 <- read.csv(file="/Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/Year5_Features.csv",header=TRUE,sep=",")
+year9 <- read.csv(file="/Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/Year9_Features.csv",header=TRUE,sep=",")
+```
+
+
+
+```{r}
+
+
+#View(year9)
+
+combine0 <- baseline %>% select(idnum, m1a4, m1a11a, m1a11b) %>% 
+  filter(idnum>-1, m1a4>-1, m1a11a>-1, m1a11b>-1)
+
+combine1 <- year1 %>% select(idnum,m2b18a,m2b18b,m2b18c,m2b18d,m2b18e,m2b18f,m2b18g,m2b18h,m2c3a,m2c3b, m2c3c,m2c3d,m2c3e,m2c3f,m2c3h,m2c3i,m2c3j) %>%    filter(m2b18a>-1,m2b18b>-1,m2b18c>-1,m2b18d>-1,m2b18e>-1,m2b18f>-1,m2b18g>-1,m2b18h>-1,m2c3a>-1,m2c3b>-1, m2c3c>-1,m2c3d>-1,m2c3e>-1,m2c3f>-1,m2c3h>-1,m2c3i>-1,m2c3j>-1)
+
+combine3 <- year3 %>% select(idnum,m3b4a,m3b4b,m3b4c,m3b4d,m3b4e,m3b4f,m3b4g,m3b4h,m3b4i,m3b4k,m3b4l,m3b5,m3c3a,m3c3b,m3c3c,m3c3d,m3c3e,m3c3f,m3c3g,m3c3h,m3c3i,m3c3j,m3c3k,m3c3l) %>% 
+  filter(m3b4a>-1,m3b4b>-1,m3b4c>-1,m3b4d>-1,m3b4e>-1,m3b4f>-1,m3b4g>-1,m3b4h>-1,m3b4i>-1,m3b4k>-1,m3b4l>-1,m3b5>-1,m3c3a>-1,m3c3b>-1,m3c3c>-1,m3c3d>-1,m3c3e>-1,m3c3f>-1,m3c3g>-1,m3c3h>-1,m3c3i>-1,m3c3j>-1,m3c3k>-1,m3c3l>-1)
+
+combine5 <- year5 %>% select(idnum,m4b4a1,m4b4a2,m4b4a3,m4b4a4,m4b4a5,m4b4a6,m4b4a7,m4b4a8) %>% 
+  filter(m4b4a1>-1,m4b4a2>-1,m4b4a3>-1,m4b4a4>-1,m4b4a5>-1,m4b4a6>-1,m4b4a7>-1,m4b4a8>-1)
+
+combine9 <- year9 %>% select(idnum,t5c13a,t5c13b,t5c13c) %>% 
+  filter(t5c13a>-1,t5c13b>-1,t5c13c>-1)
+
+join1 <- inner_join(combine0,combine1, by="idnum")
+join2 <- inner_join(join1,combine3, by="idnum")
+join3 <- inner_join(join2,combine5, by="idnum")
+finalCombined <- inner_join(join3,combine9, by="idnum")
+
+# add outcome variables
+finalCombined$t5c13a <- as.factor(finalCombined$t5c13a)
+finalCombined$t5c13b <- as.factor(finalCombined$t5c13b)
+finalCombined$t5c13c <- as.factor(finalCombined$t5c13c)
+```
+
+
+```{r}
+# ##  SET UP
+# top  DPW - hand picked features in days/per/week format
+#need more features
+features <- c('m4b4a2','m3c3l','m4b4a8','m3b4l','m3b4a','m2c3j','m2c3f','m3c3g','m2c3e','m3b4d','m2c3a')
+
+#
+
+# top  YN - hand picked features in yes no format
+#
+# 
+
+# create new column for tallied features
+finalCombined <- finalCombined %>% mutate(tally = 0)
+View(finalCombined)
+
+# ##  FUNCTIONS
+
+# COMPUTED MEAN
+computed_mean <- function(column) {
+  
+  response <- finalCombined[[column]]
+  weighted_mean <- (sum(response==0)*0 + sum(response==1)*1 + sum(response==2)*2 + sum(response==3)*3 + sum(response==4)*4 +       sum(response==5)*5 + sum(response==6)*6 +sum(response==7)*7)/length(response)
+  
+  
+  #l <- paste(column, ">",weighted_mean)
+  #finalCombined <- finalCombined %>% filter_(l) %>% mutate(tally=tally+1)
+  #finalCombined <- finalCombined %>% mutate_(tally = ifelse(column > weighted_mean, tally+1, tally))
+  fltr <- response > weighted_mean
+  finalCombined[fltr,"tally"] <- finalCombined[fltr,"tally"] + 1
+  return(finalCombined)
+}
+
+
+# ##  COMPUTATIONS
+# Number of activities
+weighted_means <- c(1:length(features))
+for(i in 1:length(features)){
+  column_name = features[i]
+  finalCombined <- computed_mean(column_name)
+}
+#View weighted means for top 11 features
+
+
+
+
+
+
+
+
+
+
+```

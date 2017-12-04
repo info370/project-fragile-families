@@ -7,31 +7,34 @@ output: html_document
 
 #load all datasets
 ```{r cars}
-ffmerged1 <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/ALLMERGED_pub.dta')
+# ffmerged1 <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/ALLMERGED_pub.dta')
+if(!require(haven)){install.packages("haven"); require(haven)}
+ffmerged2 <- read_dta('C://Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/ff_pub_merge2.dta')
 
-ffmerged2 <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ff_pub_merge2.dta')
+ffmombaseline <- read_dta('C://Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/ffmombspv3.dta')
 
-ffmombaseline <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ffmombspv3.dta')
+ffdadbaseline <- read_dta('C://Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/ffdadbspv3.dta')
 
-ffdadbaseline <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ffdadbspv3.dta')
+ffmom1yr<- read_dta('C://Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/ffmom1ypv2.dta')
 
-ffmom1yr<- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ffmom1ypv2.dta')
+ffdad1yr <- read_dta('C://Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/ffdad1ypv2.dta')
 
-ffdad1yr <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ffdad1ypv2.dta')
+ffmom3yr <- read_dta('C://Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/ffmom3ypv2.dta')
 
-ffmom3yr <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ffmom3ypv2.dta')
+ffdad3yr <- read_dta('C://Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/ffdad3ypv2.dta')
 
-ffdad3yr <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ffdad3ypv2.dta')
+ffmom5yr <- read_dta('C://Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/ffmom5ypv1.dta')
 
-ffmom5yr <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ffmom5ypv1.dta')
+ffdad5yr <- read_dta('C://Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/ffdad5ypv1.dta')
 
-ffdad5yr <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ffdad5ypv1.dta')
+ff9yr <- read_dta('C://Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/ff_y9_pub1.dta')
 
-ff9yr <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ff_y9_pub1.dta')
+ffinhome3yr <- read_dta('C://Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/InHome3yr.dta')
 
-ffinhome3yr <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/InHome3yr.dta')
+ffinhome5yr <- read_dta('C://Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/data/inhome5yr2011.dta')
 
-ffinhome5yr <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/inhome5yr2011.dta')
+/Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/Pilot Study.Rmd
+
 ```
 
 #view all datasets
@@ -61,4 +64,7 @@ View(ff9yr)
 View(ffinhome3yr)
 
 View(ffinhome5yr)
+
+
+colNames(ff9yr)
 ```
