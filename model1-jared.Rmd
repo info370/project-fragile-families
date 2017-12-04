@@ -194,17 +194,17 @@ parent_involvement2$score
 length <- length(features2)
 parent_involvement2 <- parent_involvement2 %>% mutate(percentage = tally/124.0)
 
-ggplot(data = parent_involvement2, aes(x = t5c13c, y = percentage)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot()
+ggplot(data = parent_involvement2, aes(x = t5c13c, y = tally)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot() +labs(title="Math Performance v Parent Activity Count", x="Performance in Math", y="# of Parent Activities") + scale_x_discrete(labels=c("Far Below Average","Below Average","Average","Above Average","Far Above Average"))
 
 # Involvment by reading
-ggplot(data = parent_involvement2, aes(x = t5c13a, y = percentage)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot()
+ggplot(data = parent_involvement2, aes(x = t5c13a, y = tally)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot() +labs(title="Reading Performance v Parent Activity Count", x="Performance in Reading", y="# of Parent Activities")+  scale_x_discrete(labels=c("Far Below Average","Below Average","Average","Above Average","Far Above Average"))
 
 # Involvement by science
-ggplot(data = parent_involvement2, aes(x = t5c13b, y = percentage)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot()
+ggplot(data = parent_involvement2, aes(x = t5c13b, y = tally)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot() +labs(title="Science Performance v Parent Activity Count", x="Performance in Science", y="# of Parent Activities")+ scale_x_discrete(labels=c("Far Below Average","Below Average","Average","Above Average","Far Above Average"))
 
 
 #Involvement total score
-ggplot(data = parent_involvement2, aes(x = score, y = percentage)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot()
+ggplot(data = parent_involvement2, aes(x = score, y = tally)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot() +labs(title="Total Performance v Parent Activity Count", x="School Performance", y="# of Parent Activities")  + scale_x_discrete(labels=c("Far Below Average","","","Below Average","","","Average","","","Above Average","","","Far Above Average"))
 
 
 
