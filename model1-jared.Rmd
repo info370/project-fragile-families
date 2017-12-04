@@ -53,24 +53,20 @@ features <- c('m4b4a2','m3c3l','m4b4a8','m3b4l','m3b4a','m2c3j','m2c3f','m3c3g',
 # 
 
 # create new column for tallied features
-finalCombined <- finalCombined %>% mutate(tally = 0)
-View(finalCombined)
+parent_involvement <- finalCombined %>% mutate(tally = 0)
+View(parent_involvement)
 
 # ##  FUNCTIONS
 
 # COMPUTED MEAN
 computed_mean <- function(column) {
   
-  response <- finalCombined[[column]]
+  response <- parent_involvement[[column]]
   weighted_mean <- (sum(response==0)*0 + sum(response==1)*1 + sum(response==2)*2 + sum(response==3)*3 + sum(response==4)*4 +       sum(response==5)*5 + sum(response==6)*6 +sum(response==7)*7)/length(response)
   
-  
-  #l <- paste(column, ">",weighted_mean)
-  #finalCombined <- finalCombined %>% filter_(l) %>% mutate(tally=tally+1)
-  #finalCombined <- finalCombined %>% mutate_(tally = ifelse(column > weighted_mean, tally+1, tally))
   fltr <- response > weighted_mean
-  finalCombined[fltr,"tally"] <- finalCombined[fltr,"tally"] + 1
-  return(finalCombined)
+  parent_involvement[fltr,"tally"] <- parent_involvement[fltr,"tally"] + 1
+  return(parent_involvement)
 }
 
 
@@ -79,9 +75,20 @@ computed_mean <- function(column) {
 weighted_means <- c(1:length(features))
 for(i in 1:length(features)){
   column_name = features[i]
-  finalCombined <- computed_mean(column_name)
+  parent_involvement <- computed_mean(column_name)
 }
 #View weighted means for top 11 features
+
+
+# ## GRAPHS
+# Involvement by math
+
+
+# Involvment by reading
+
+
+# Involvement by science
+
 
 
 
