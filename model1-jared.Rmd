@@ -33,6 +33,13 @@ join2 <- inner_join(join1,combine3, by="idnum")
 join3 <- inner_join(join2,combine5, by="idnum")
 finalCombined <- inner_join(join3,combine9, by="idnum")
 
+# prepare new columns
+# total activities
+parent_involvement <- finalCombined %>% mutate(tally = 0)
+
+# total grade
+parent_involvement <- parent_involvement %>% mutate(score = t5c13a + t5c13b + t5c13c)
+
 # add outcome variables
 finalCombined$t5c13a <- as.factor(finalCombined$t5c13a)
 finalCombined$t5c13b <- as.factor(finalCombined$t5c13b)
@@ -52,9 +59,7 @@ features <- c('m4b4a2','m3c3l','m4b4a8','m3b4l','m3b4a','m2c3j','m2c3f','m3c3g',
 #
 # 
 
-# create new column for tallied features
-parent_involvement <- finalCombined %>% mutate(tally = 0)
-View(parent_involvement)
+### View(parent_involvement)
 
 # ##  FUNCTIONS
 
@@ -77,17 +82,26 @@ for(i in 1:length(features)){
   column_name = features[i]
   parent_involvement <- computed_mean(column_name)
 }
-#View weighted means for top 11 features
+
+
+# Percentage of activities
+length <- length(features)
+parent_involvement <- parent_involvement %>% mutate(percentage = tally/11.0)
 
 
 # ## GRAPHS
-# Involvement by math
+# Involvement by math (1-5)
 
 
-# Involvment by reading
+# Involvment by reading (1-5)
 
 
-# Involvement by science
+# Involvement by science (1-5)
+
+
+
+
+
 
 
 
