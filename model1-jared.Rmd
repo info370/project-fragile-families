@@ -48,6 +48,8 @@ finalCombined$t5c13c <- as.factor(finalCombined$t5c13c)
 
 
 ```{r}
+####    Version 1:  Popularity of activites from Yuxing's feature selection
+
 # ##  SET UP
 # top  DPW - hand picked features in days/per/week format
 #need more features
@@ -107,12 +109,29 @@ ggplot(data = parent_involvement, aes(x = score, y = percentage)) + geom_point()
 
 
 
+```
 
 
+```{r}
+####    Verison 2: Popularity of all activities in the days/week format
+features <- c('f1g9a',	'f1g9b',	'f1g9c',	'f1g9d',	'f1g9e',	'f1g9',	'f1g9g',	'f1g9h',	'f1g9i',	'f1g9j',	'f1g9k',	'f1g9l','m2b18a',	'm2b18b',	'm2b18c',	'm2b18d',	'm2b18e',	'm2b18f',	'm2b18g',	'm2b18h','m2c3a','m3b4a',	'm3b4b',	'm3b4c',	'm3b4d',	'm3b4e',	'm3b4f',	'm3b4g',	'm3b4h',	'm3b4i',	'm3b4j',	'm3b4k',	'm3b4l',	'm3b4m','m3c3a','m3c3b',	'm3c3c',	'm3c3d',	'm3c3e',	'm3c3f',	'm3c3g',	'm3c3h',	'm3c3i',	'm3c3j',	'm3c3k',	'm3c3l',	'm3c3m','f3c3a',	'f3c3b',	'f3c3c',	'f3c3d',	'f3c3e',	'f3c3f',	'f3c3g',	'f3c3h',	'f3c3i',	'f3c3j',	'f3c3k',	'f3c3l',	'f3c3m','f3b4a',	'f3b4b',	'f3b4c',	'f3b4d',	'f3b4e',	'f3b4f',	'f3b4g',	'f3b4h',	'f3b4i',	'f3b4j',	'f3b4k',	'f3b4l',	'f3b4m','m4c3a',	'm4c3b',	'm4c3c',	'm4c3d',	'm4c3e',	'm4c3f','m4c3g',	'm4c3h','f4b4a1',	'f4b4a2',	'f4b4a3',	'f4b4a4',	'f4b4a5',	'f4b4a6',	'f4b4a7',	'f4b4a8',	'f4c3a',	'f4c3b',	'f4c3c',	'f4c3d',	'f4c3e',	'f4c3f',	'f4c3g',	'f4c3h','f2b36a',	'f2b36b',	'f2b36c',	'f2b36d',	'f2b36e',	'f2b36f',	'f2b36g',	'f2b36h',	'f2c3a',	'f2c3b',	'f2c3c',	'f2c3d',	'f2c3e',	'f2c3f',	'f2c3g',	'f2c3h',	'f2c3i',	'f2c3j','m2c3b',	'm2c3c',	'm2c3d',	'm2c3e',	'm2c3f',	'm2c3g',	'm2c3h',	'm2c3i',	'm2c3j')
+
+parent_involvement2 <- parent_involvement
+parent_invovlement2[parent_involvement2==201] <- 7
+
+# ##  FUNCTIONS
+# convert 
+# -6 to 0
+# apply to c()
+c('m2b28','f2b24','m3b11','f3b11')
 
 
-
-
+## convert 
+# 201 => 7
+# 202 => 3
+# 203 => 2
+# 204 => 1
+# 205 => 0
 
 
 
