@@ -43,7 +43,7 @@ year9 <- read.csv(file="/Users/jaredpraino/Documents/University of Washington/Se
 
 ```{r}
 
-
+## Combining data for all years
 #View(year9)
 
 combine0 <- baseline %>% select(idnum, m1a4, m1a11a, m1a11b) %>% 
@@ -85,43 +85,14 @@ ggplot(results)
 # chosen features
 predictors(results)
 
-# specify proportion of data used for training
-split_proportion = 0.8 
-
-# select outcome variable
-outcome1 <- fullSet %>% dplyr::select(t5c13c)
-
-# randomly select indices for train/validate set
-train_ind1 <- createDataPartition(outcome1$t5c13c, p = split_proportion, list = FALSE)
-fullSet_train <- fullSet[train_ind1,] # get training data
-fullSet_test <- fullSet[-train_ind1,] # get test data
-
-fullSet_x <- fullSet_test %>% dplyr::select(-t5c13c) # select predictor data for test set
-fullSet_y <- fullSet_test %>% dplyr::select(t5c13c) # select outcome data for test set
-
-
-# fit model
-ctrl <- trainControl(method = "cv", number=5)
-model2_nb <- train(t5c13c ~ . , method="nb", data=fullSet_train, trControl = ctrl)
-
-# predictions using model
-predict_math1 <- predict(model2_nb, fullSet_x)
-
-# performance
-caret::confusionMatrix(predict_math1, fullSet$t5c13c)
-
 ```
-
-*TODO*: Select the most important features (up to 10) and use only those parameters moving forward
-
+Select the most important features (up to 10) and use only those parameters moving forward
 ```{r}
-selected_features <- predictors(results)[1:5] 
+
 selected_features <- predictors(results)[1:10] 
-selected_features_1 <- c("m1a11b","m3b4d","m3c3j","m3b4a","m3c3i","m3b4h")
+selected_features
 ```
 
-
-Determine if which features are highly correlated
 
 ## Ranking features by importance
 Rank features by importance using K-Nearest Neighbors (KNN). Plot the performance
@@ -129,8 +100,9 @@ Rank features by importance using K-Nearest Neighbors (KNN). Plot the performanc
 ```{r}
 
 control <- trainControl(method="repeatedcv", number = 5, repeats = 3)
-
-model <- train(idnum ~., data=finalCombined, method = "knn", trControl = control)
+finalCombined$t5c13a <- NULL
+finalCombined$t5c13b <- NULL
+model <- train(t5c13c ~., data=finalCombined, method = "knn", trControl = control)
 
 importance <- varImp(model)
 
@@ -138,67 +110,5 @@ ggplot(importance)
 
 selected_features_2 <- c("m3c3e","m4b4a1","m3b4h","m4b4a5")
 
-
-
 ```
 
-
-
-
-
-
-```{r}
-glmnet_grid <- expand.grid(alpha = c(0,  .1,  .2, .4, .6, .8, 1),
-                           lambda = c(1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1,1))
-glmnet_ctrl <- trainControl(method = "cv", number = 10)
-glmnet_fit_2 <- train(t5c13c ~ ., data = finalCombined[, c(selected_features_2, "t5c13c")],
-                    method = "glmnet",
-                    preProcess = c("center", "scale"),
-                    tuneGrid = glmnet_grid,
-                    trControl = glmnet_ctrl)
-glmnet_fit_1
-glmnet_fit_2
-
-
-```
-
-```{r}
-#Split data into train and test set
-
-# splitting boston data into train+validate and test sets
-
-split_proportion = 0.8 # specify proportion of data used for training
-
-# select outcome variable
-outcome <- finalCombined %>% dplyr::select(t5c13c)
-x <- finalCombined %>% filter(t5c13c == 5)
-x5 <- x[sample(nrow(x),20),]
-new_x <- rbind(x1,x2)
-new_x <- rbind(new_x,x3)
-new_x <- rbind(new_x,x4)
-new_x <- rbind(new_x,x5)
-outcome <- new_x %>% dplyr::select(t5c13c)
-
-# randomly select indices for train/validate set
-train_ind <- createDataPartition(outcome$t5c13c, p = split_proportion, list = FALSE)
-finalCombined_train <- new_x[train_ind,] # get training data
-finalCombined_test <- new_x[-train_ind,] # get test data
-
-finalCombined_x <- finalCombined_test %>% dplyr::select(-t5c13c) # select predictor data for test set
-finalCombined_y <- finalCombined_test %>% dplyr::select(t5c13c) # select outcome data for test set
-
-#################
-
-if(!require(klaR)){install.packages("klaR"); require(klaR)} # only need this is dependencies of caret were not installed
-
-# fit model
-ctrl <- trainControl(method = "cv", number=5)
-model_nb <- train(t5c13c ~ . , method="nb", data=finalCombined_train, trControl = ctrl)
-
-# predictions using model
-predict_math <- predict(model_nb, finalCombined_x)
-
-# performance
-caret::confusionMatrix(predict_math, finalCombined_y$t5c13c)
-
-```
