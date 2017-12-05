@@ -1,4 +1,19 @@
 Jared
+```{R}
+library(dplyr)
+if(!require(mlbench)){install.packages("mlbench"); require(mlbench)} # common datasets to use
+if(!require(caret)){install.packages("caret", dependencies = c("Depends", "Suggests")); require(caret)} # ML package and its dependencies. This will take awhile!
+if(!require(dplyr)){install.packages("dplyr"); require(dplyr)}
+set.seed(370)
+if(!require(ModelMetrics)){install.packages("ModelMetrics"); require(ModelMetrics)} # common datasets to use
+if(!require(recipes)){install.packages("recipes"); require(recipes)} # common datasets to use
+if(!require(DEoptimR)){install.packages("DEoptimR"); require(DEoptimR)} # common datasets to use
+
+
+
+
+```
+
 ```{r}
 baseline <- read.csv(file="/Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/Baseline_Features.csv",header=TRUE,sep=",")
 year1 <- read.csv(file="/Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/Year1_Features.csv", header=TRUE,sep=",")
@@ -182,7 +197,6 @@ computed_mean2 <- function(column) {
 }
 
 
-parent_involvement2 <- parent_involvement2[complete.cases(parent_involvement2), ]
 for(i in 1:length(features2)){
   column_name = features[i]
   parent_involvement2 <- computed_mean2(column_name)
@@ -205,6 +219,21 @@ ggplot(data = parent_involvement2, aes(x = t5c13b, y = tally)) + geom_point() + 
 
 #Involvement total score
 ggplot(data = parent_involvement2, aes(x = score, y = tally)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot() +labs(title="Total Performance v Parent Activity Count", x="School Performance", y="# of Parent Activities")  + scale_x_discrete(labels=c("Far Below Average","","","Below Average","","","Average","","","Above Average","","","Far Above Average"))
+
+
+
+
+```
+
+``` {r}
+install.packages("devtools")
+library(devtools)
+install_github("easyGgplot2", "kassambara")
+
+library(easyGgplot2)
+
+
+ggplot2.violinplot(data=parent_involvement2, xName='score',yName='tally', addDot=TRUE)
 
 
 
