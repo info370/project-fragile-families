@@ -219,3 +219,49 @@ View(year9)
 
 write.csv(year9, file = "Year9_Features.csv")
 ```
+
+```{r}
+install.packages('haven')
+library(haven)
+everythingSet = read_dta("C://Users/grant/Documents/INFO370/fragile_families/ALLMERGED_pub.dta")
+
+everythingSet <- read.csv(file="/Users/grant/Documents/INFO370/fragile_families/ALLMERGED_pub.csv",header=TRUE,sep=",")
+
+maritalStatus <- select(everythingSet, idnum, m4a4, m5a4)
+
+
+Benji100Rows <- head(everythingSet, num=100L)
+
+write.csv(Benji100Rows, file="Benji100Rows.csv")
+
+combine9_2 <- year9 %>% select(idnum,t5c13a,t5c13b,t5c13c)
+
+combine9_2 <- combine9 %>% mutate(score=t5c13a + t5c13b + t5c13c)
+
+add_kind <- year5 %>% select(idnum, kind_a5, kind_a6, kind_a7)
+
+add_kind <- add_kind %>% mutate(scoreKind= kind_a5 + kind_a6 + kind_a7)
+
+maritalStatus <- maritalStatus
+
+
+
+
+combine9_2$t5c13a <- as.factor(combine9_2$t5c13a)
+combine9_2$t5c13b <- as.factor(combine9_2$t5c13b)
+combine9_2$t5c13c <- as.factor(combine9_2$t5c13c)
+combine9_2$score <- as.factor(combine9_2$score)
+
+# merge
+parent_involvement2 <- inner_join(combine9_2, parent_involvement2, by="idnum")
+parent_involvement2 <- parent_involvement2 %>% mutate(tally = 0)
+
+parent_involvement2 <- inner_join(add_kind, parent_involvement2, by="idnum")
+parent_involvement2 <- parent_involvement2 %>% mutate(tally2 = 0)
+
+parent_involvement2 <- inner_join(maritalStatus, parent_involvement2, by="idnum")
+parent_involvement2$m4a4
+
+
+write.csv(parent_involvement2, file = "FeaturesWithYear9Year5MartialStatus.csv")
+```
