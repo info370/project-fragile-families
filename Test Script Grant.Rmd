@@ -45,7 +45,6 @@ ffmom5yr <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project
 ffdad5yr <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ffdad5ypv1.dta')
 
 ff9yr <- read_dta('C://Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/ff_y9_pub1.dta')
-```
 
 View(ffmom3yr)
 
@@ -55,7 +54,6 @@ View(ffmom1yr)
 
 View(ff9yr)
 coldetails(ffdatasetjared)
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
 install.packages("haven")
 library(haven)
@@ -73,3 +71,4 @@ ffmombaseline <-  read_dta('C://Users/grant/Documents/INFO370/fragile_families/p
 View(ffmerged2)
 
 colnames(ffdataset)
+```

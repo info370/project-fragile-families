@@ -79,17 +79,19 @@ RemoveBlank_Dummy <- function(df, col) {
   return(dummyFrame)
 }
 
-View(fullSet)
+View(everythingSet)
 ```
 
 ```{r}
 
 #put all varaibles as numeric to filter
 names <- c("m1a11b", "m3c3h", "m3b4d", "m4b4a1", "t5c13c")
-fullSet[,names] <- lapply(fullSet[,names], as.numeric) 
+finalCombined[,names] <- lapply(finalCombined[,names], as.numeric) 
 
 #select all survey questions and the outcome variable, filter out negative numbers
-otherDummyVars <- select(fullSet, m1a11b, m3c3h, m3b4d, m4b4a1, t5c13c) %>% filter(f5k14d >= 0, m3c3h >= 0, t5c13c >= 0, t5c13c < 6, m1a11b > 0, m3b4d > 0, m4b4a1 > 0)
+otherDummyVars <- select(finalCombined, m1a11b, m3c3h, m3b4d, m4b4a1, t5c13c) %>% filter(f5k14d >= 0, m3c3h >= 0, t5c13c >= 0, t5c13c < 6, m1a11b > 0, m3b4d > 0, m4b4a1 > 0)
+
+finalCombined$f5k14d
 
 View(otherDummyVars)
 
@@ -147,12 +149,12 @@ combine2 <- inner_join(baselineYear9, year1)
 combine3 <- inner_join(combine2, year3)
 combine4 <- inner_join(combine3, year5)
 
-fullSet <- combine4
+everythingSet <- combine4
 
-fullSet2 <- fullSet
-fullSet2[fullSet2 < 0 ] <- NA
+everythingSet2 <- everythingSet
+everythingSet2[everythingSet2 < 0 ] <- NA
 
-View(fullSet2)
+View(everythingSet2)
 
 ```
 

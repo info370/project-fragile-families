@@ -130,6 +130,72 @@ cor(parent_involvement$score,parent_involvement$tally)
 
 ```
 
+```{r}
+#barplot for days per week playing imaginary games with child
+test.baselineYear9 <- select(combine4, t5c13c, m3b4e) %>% filter(t5c13c > -1, m3b4e > -1, t5c13c < 7)
+
+
+day1 <- filter(test.baselineYear9, m3b4e == 1)
+dfDay1 <- table(day1)
+
+day2 <- filter(test.baselineYear9, m3b4e == 2)
+dfDay2 <- table(day2)
+
+day3 <- filter(test.baselineYear9, m3b4e == 3)
+dfDay3 <- table(day3)
+
+day4 <- filter(test.baselineYear9, m3b4e == 4)
+dfDay4 <- table(day4)
+
+day5 <- filter(test.baselineYear9, m3b4e == 5)
+dfDay5 <- table(day5)
+
+day6 <- filter(test.baselineYear9, m3b4e == 6)
+dfDay6 <- table(day6)
+
+day7 <- filter(test.baselineYear9, m3b4e == 7)
+dfDay7 <- table(day7)
+
+View(newdf)
+
+barplot(height = dfDay2, beside = T, col=c("aquamarine3","coral", "red", "blue", "green"))
+legend("topleft", c("far below average", "below average", "average", "above average", "far above average"), pch=15, 
+       col=c("aquamarine3","coral", "red", "blue", "green"), 
+       bty="n")
+
+barplot(height = dfDay3, beside = T, col=c("aquamarine3","coral", "red", "blue", "green"))
+legend("topleft", c("far below average", "below average", "average", "above average", "far above average"), pch=15, 
+       col=c("aquamarine3","coral", "red", "blue", "green"), 
+       bty="n")
+
+barplot(height = dfDay4, beside = T, col=c("aquamarine3","coral", "red", "blue", "green"))
+legend("topleft", c("far below average", "below average", "average", "above average", "far above average"), pch=15, 
+       col=c("aquamarine3","coral", "red", "blue", "green"), 
+       bty="n")
+
+barplot(height = dfDay5, beside = T, col=c("aquamarine3","coral", "red", "blue", "green"))
+legend("topleft", c("far below average", "below average", "average", "above average", "far above average"), pch=15, 
+       col=c("aquamarine3","coral", "red", "blue", "green"), 
+       bty="n")
+
+barplot(height = dfDay6, beside = T, col=c("aquamarine3","coral", "red", "blue", "green"))
+legend("topleft", c("far below average", "below average", "average", "above average", "far above average"), pch=15, 
+       col=c("aquamarine3","coral", "red", "blue", "green"), 
+       bty="n")
+
+barplot(height = dfDay7, beside = T, col=c("aquamarine3","coral", "red", "blue", "green"))
+legend("topleft", c("far below average", "below average", "average", "above average", "far above average"), pch=15, 
+       col=c("aquamarine3","coral", "red", "blue", "green"), 
+       bty="n")
+
+ggplot(data = as.data.frame(newdf), aes(m3b4e, t5c13c, size = Freq, color = Freq)) + geom_point() +
+scale_color_gradient(low="blue", high="red") 
+
+#linear model for best feature against math score
+linear_model <- lm(t5c13c ~ m3c3h, data=test.baselineYear9)
+linear_model
+```
+
 
 ```{r}
 ####    Verison 2: Popularity of all activities in the days/week format
@@ -142,9 +208,7 @@ cor(parent_involvement$score,parent_involvement$tally)
 features2 <- c('f1g9a',	'f1g9b',	'f1g9c',	'f1g9d',	'f1g9e',	'f1g9f',	'f1g9g',	'f1g9h',	'f1g9i',	'f1g9j',	'f1g9k',	'f1g9l','m2b18a',	'm2b18b',	'm2b18c',	'm2b18d',	'm2b18e',	'm2b18f',	'm2b18g',	'm2b18h','m2c3a','m3b4a',	'm3b4b',	'm3b4c',	'm3b4d',	'm3b4e',	'm3b4f',	'm3b4g',	'm3b4h',	'm3b4i',	'm3b4j',	'm3b4k',	'm3b4l',	'm3b4m','m3c3a','m3c3b',	'm3c3c',	'm3c3d',	'm3c3e',	'm3c3f',	'm3c3g',	'm3c3h',	'm3c3i',	'm3c3j',	'm3c3k',	'm3c3l',	'm3c3m','f3c3a',	'f3c3b',	'f3c3c',	'f3c3d',	'f3c3e',	'f3c3f',	'f3c3g',	'f3c3h',	'f3c3i',	'f3c3j',	'f3c3k',	'f3c3l',	'f3c3m','f3b4a',	'f3b4b',	'f3b4c',	'f3b4d',	'f3b4e',	'f3b4f',	'f3b4g',	'f3b4h',	'f3b4i',	'f3b4j',	'f3b4k',	'f3b4l',	'f3b4m','m4c3a',	'm4c3b',	'm4c3c',	'm4c3d',	'm4c3e',	'm4c3f','m4c3g',	'm4c3h','f4b4a1',	'f4b4a2',	'f4b4a3',	'f4b4a4',	'f4b4a5',	'f4b4a6',	'f4b4a7',	'f4b4a8',	'f4c3a',	'f4c3b',	'f4c3c',	'f4c3d',	'f4c3e',	'f4c3f',	'f4c3g',	'f4c3h','f2b36a',	'f2b36b',	'f2b36c',	'f2b36d',	'f2b36e',	'f2b36f',	'f2b36g',	'f2b36h',	'f2c3a',	'f2c3b',	'f2c3c',	'f2c3d',	'f2c3e',	'f2c3f',	'f2c3g',	'f2c3h',	'f2c3i',	'f2c3j','m2c3b',	'm2c3c',	'm2c3d',	'm2c3e',	'm2c3f',	'm2c3g',	'm2c3h',	'm2c3i',	'm2c3j')
 
 
-
-
-parent_involvement2 <- read.csv("/Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/FeaturesSelected.csv")
+parent_involvement2 <- read.csv("/Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/FeaturesSelected.csv")
 
 ## convert 200's values
 # 201 => 7
@@ -173,6 +237,8 @@ combine9_2$t5c13c <- as.factor(combine9_2$t5c13c)
 combine9_2$score <- as.factor(combine9_2$score)
 
 # merge
+typeof(parent_involvement2$idnum)
+combine9_2$idnum <- as.numeric(combine9_2$idnum)
 parent_involvement2 <- inner_join(combine9_2, parent_involvement2, by="idnum")
 parent_involvement2 <- parent_involvement2 %>% mutate(tally = 0)
 
@@ -194,12 +260,6 @@ computed_mean2 <- function(column) {
   parent_involvement2[fltr,"tally"] <- parent_involvement2[fltr,"tally"] + 1
   return(parent_involvement2)
 }
-
-
-
-
-
-
 
 # Add tallies for doing activities
 for(i in 1:length(features2)){
@@ -231,9 +291,6 @@ ggplot(data = parent_involvement2, aes(x = t5c13b, y = tally)) + geom_point() + 
 #Involvement total score
 ggplot(data = parent_involvement2, aes(x = score, y = tally)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot() +labs(title="Total Performance v Parent Activity Count", x="School Performance at Year 9", y="# of Parent Activities")  + scale_x_discrete(labels=c("Far Below Average","","","Below Average","","","Average","","","Above Average","","","Far Above Average"))+ geom_smooth(method = "lm", se=FALSE, color="black", aes(group=1))
 
-
-
-
 ```
 
 ``` {r}
@@ -243,7 +300,7 @@ install_github("easyGgplot2", "kassambara")
 
 library(easyGgplot2)
 
-
+#violin plot for total score
 ggplot2.violinplot(data=parent_involvement2, xName='score',yName='tally', addDot=FALSE, addMean=TRUE) + labs(title="Total Performance v Parent Activity Count", x="Total Performance", y="# of Parent Activities") + scale_x_discrete(labels=c("Far Below Average","","","Below Average","","","Average","","","Above Average","","","Far Above Average"))
 
 
@@ -312,11 +369,38 @@ for(i in 1:length(features_year_5)){
   column_name = features_year_5[i]
   year5grades <- computed_mean_year_5(column_name)
 }
-View(year5grades$tally)
 
+#graph year 5 scores vs tallies of activities
 ggplot(data = year5grades, aes(x = scoreKind, y = tally)) + geom_point() + geom_jitter(width = 0.2) +
   geom_smooth(method = "lm", color="black", aes(group=1))
 
 cor(year5grades$score,year5grades$tally)
 
+```
+
+```{r}
+#chi squared values
+marriedYear9 <- filter(year9gradesHighLow, marrystat == "M")
+
+divorcedYear9 <- filter(year9gradesHighLow, marrystat == "D")
+
+
+count(marriedYear9, var = abovebelowScore)
+
+count(divorcedYear9, var = abovebelowScore)
+
+
+belowMarryRatio <- 166/687
+
+aboveMarryRatio <- 521/687
+
+belowDivRation <- 270/680
+
+aboveDivRatio <- 410/680
+
+paste("Below Marry Ratio: "  ,belowMarryRatio)
+paste("Above Marry Ratio: "  , aboveMarryRatio)
+
+paste("Below Divorce Ratio: " , belowDivRation)
+paste("Above Divorce Ratio: " , aboveDivRatio)
 ```
