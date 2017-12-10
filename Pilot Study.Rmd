@@ -1,6 +1,7 @@
 ---
 title: "Pilot Study"
 output: html_document
+description: test the datasets to make sure we can load, read, and interact with the data
 ---
 
 ## R Markdown
@@ -32,8 +33,6 @@ ff9yr <- read_dta('C://Users/jaredpraino/Documents/University of Washington/Seni
 ffinhome3yr <- read_dta('C://Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/InHome3yr.dta')
 
 ffinhome5yr <- read_dta('C://Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/data/inhome5yr2011.dta')
-
-/Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/Pilot Study.Rmd
 
 ```
 

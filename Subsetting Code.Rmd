@@ -1,6 +1,10 @@
 ---
 title: "Subsets"
 output: html_document
+description: this file is used to extract variables of interests.
+process:  sift through codebooks found at <https://fragilefamilies.princeton.edu/documentation> for questions of interest; take note of variable IDs, select subset of variables using dplyr
+          
+
 ---
 
 ```{r setup, include=FALSE}
@@ -23,7 +27,7 @@ library(dplyr)
 baseline <- select(ffdatasetcsv, idnum, mothid1, cm1fint, m1a4, m1a11a, m1a11b, m1a11c, m1a11d, cm1age, cm1bsex, m1b2, m1b3, m1b11a, m1b22a, m1b11b, m1b22b, m1b11c, m1b22c, m1b11d, m1b22d, m1b13b, m1b25b, m1b13c, m1b25c, m1b16, m1b17, m1g2, m1g3, m1g4, fathid1, f1b5a, f1b11a, f1b22a, f1b5b, f1b11b, f1b22b, f1b5c, f1b11c, f1b22c, f1b5d, f1b11d, f1b22d, f1b13b, f1b13c, f1b16, f1b17, f1g3, f1g4, f1g2)
 
 View(baseline)
-
+# All Days/Week Questions Baseline
 write.csv(baseline, file = "Baseline_Features.csv")
 
 ```
@@ -32,7 +36,7 @@ write.csv(baseline, file = "Baseline_Features.csv")
 year1 <- select(ffdatasetcsv, idnum, mothid2, cm2fint, m2a4, m2a4d, m2a10, m2a11, cm2age, cm2b_age, m2b15, m2b18a, m2b18b, m2b18c, m2b18d, m2b18e, m2b18f, m2b18g, m2b18h, m2b19, m2b19a, mx2b20b, m2b21, m2b21a, m2c1, m2c1a, m2c2a, m2c2b1, m2c2b2, m2c2e, m2c2f, m2c3a, m2c3b, m2c3c, m2c3d, m2c3e, m2c3f, m2c3g, m2c3h, m2c3i, m2c3j, mx2c2c, m2c4)
 
 View(year1)
-
+# All Days/Week Questions Year 1
 write.csv(year1, file = "Year1_Features.csv")
 ```
 
@@ -40,7 +44,7 @@ write.csv(year1, file = "Year1_Features.csv")
 year3 <- select(ffdatasetcsv, idnum, mothid3, cm3fint, m3a4, m3a4b, m3a8c, m3a9, cm3age, cm3b_age, m3a4a, m3a4a1, m3a4a2, m3a4b, m3a9, m3b4a, m3b4c, m3b4d, m3b4e, m3b4f, m3b4b, m3b4m, m3b4g, m3b4h, m3b4i, m3b4k, m3b4k, m3b4l, m3b5, m3b5a, m3b7, m3b7a, m3c1, m3c1a, m3c2a, m3c2b1, m3c2b2, m3c2c, m3c2d, m3c3a, m3c3f, m3c3g, m3c3h, m3c3j, m3c3b, m3c3m, m3c4, m3c3c, m3c3d, m3c3e, m3c3i, m3c3k, m3c3l)
 
 View(year3)
-
+# All Days/Week Questions Year 3
 write.csv(year3, file = "Year3_Features.csv")
 
 ```
@@ -49,7 +53,7 @@ write.csv(year3, file = "Year3_Features.csv")
 year5 <- select(ffdatasetcsv, idnum, mothid4, m4b0, m4b1, m4b2, m4b4a1, m4b26a, m4b4a2, m4b26b, m4b4a3, m4b26c, m4b4a4, m4b26d, m4b4a5, m4b26e, m4b4a6, m4b26f, m4b4a7, m4b26g, m4b4a8, m4b26h, m4b5, m4b5a, m4b8, m4b8a, m4b8b, m4b27, m4b28a, m4b28b, m4b28c, m4c3a, m4c3b, m4c3c, m4c3d, m4c3e, m4c3f, m4c3g, m4c3h, m4c4, m4c4a, m4c5, m4c7a, m4c7b, m4c7c, m4c7d, m4c26a, m4c26b, m4c26c, m4c26d, m4i0e, m4j18, kind_a5, kind_a6, kind_a7, kind_b1a, kind_b1b, kind_b1c, kind_b1d, kind_b1e, kind_b1f, kind_b1g, kind_b1h, kind_b1i)
 
 View(year5)
-
+# All Days/Week Questions Year 5
 write.csv(year5, file = "Year5_Features.csv")
 ```
 
@@ -216,6 +220,6 @@ p5q1n,
 p5q4a)
 
 View(year9)
-
+# All Days/Week Questions Year 9
 write.csv(year9, file = "Year9_Features.csv")
 ```

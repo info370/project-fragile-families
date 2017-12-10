@@ -4,21 +4,13 @@ output: html_notebook
 ---
 Install packages
 ```{r}
-install.packages("haven")
-library(haven)
-library(dplyr)
-library(modelr)
-
-ffdataset <- read_dta('/Users/eunicewu/Documents/INFO370/fragile_families_yuxing/ALLMERGED_pub.dta')
-utils::View(ffdataset)
-
 if(!require(mlbench)){install.packages("mlbench"); require(mlbench)} # common datasets to use
 if(!require(caret)){install.packages("caret", dependencies = c("Depends", "Suggests")); require(caret)} # ML package and its dependencies. This will take awhile!
 if(!require(dplyr)){install.packages("dplyr"); require(dplyr)}
+if(!require(ModelMetrics)){install.packages("ModelMetrics"); require(ModelMetrics)}
+if(!require(recipes)){install.packages("recipes"); require(recipes)}
+if(!require(DEoptimR)){install.packages("DEoptimR"); require(DEoptimR)}
 set.seed(370)
-install.packages("ModelMetrics")
-install.packages("recipes")
-install.packages("DEoptimR")
 
 ```
 Yuxing
@@ -200,5 +192,16 @@ predict_math <- predict(model_nb, finalCombined_x)
 
 # performance
 caret::confusionMatrix(predict_math, finalCombined_y$t5c13c)
+
+```
+
+
+```{r}
+
+year9gradesHighLow
+abovebelowScore
+marrystat => M D
+my_summary <- year9gradesHighLow %>% group_by(marrystat,abovebelowScore) %>% summarize(total = n())
+
 
 ```

@@ -1,15 +1,12 @@
 Jared
 ```{R}
-library(dplyr)
 if(!require(mlbench)){install.packages("mlbench"); require(mlbench)} # common datasets to use
 if(!require(caret)){install.packages("caret", dependencies = c("Depends", "Suggests")); require(caret)} # ML package and its dependencies. This will take awhile!
 if(!require(dplyr)){install.packages("dplyr"); require(dplyr)}
+if(!require(ModelMetrics)){install.packages("ModelMetrics"); require(ModelMetrics)}
+if(!require(recipes)){install.packages("recipes"); require(recipes)}
+if(!require(DEoptimR)){install.packages("DEoptimR"); require(DEoptimR)}
 set.seed(370)
-if(!require(ModelMetrics)){install.packages("ModelMetrics"); require(ModelMetrics)} # common datasets to use
-if(!require(recipes)){install.packages("recipes"); require(recipes)} # common datasets to use
-if(!require(DEoptimR)){install.packages("DEoptimR"); require(DEoptimR)} # common datasets to use
-
-
 
 
 ```
