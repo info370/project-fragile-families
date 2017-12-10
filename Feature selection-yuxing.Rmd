@@ -4,24 +4,16 @@ output: html_notebook
 ---
 Install packages
 ```{r}
-install.packages("haven")
-library(haven)
-library(dplyr)
-library(modelr)
-
-ffdataset <- read_dta('/Users/eunicewu/Documents/INFO370/fragile_families_yuxing/ALLMERGED_pub.dta')
-utils::View(ffdataset)
-
 if(!require(mlbench)){install.packages("mlbench"); require(mlbench)} # common datasets to use
 if(!require(caret)){install.packages("caret", dependencies = c("Depends", "Suggests")); require(caret)} # ML package and its dependencies. This will take awhile!
 if(!require(dplyr)){install.packages("dplyr"); require(dplyr)}
+if(!require(ModelMetrics)){install.packages("ModelMetrics"); require(ModelMetrics)}
+if(!require(recipes)){install.packages("recipes"); require(recipes)}
+if(!require(DEoptimR)){install.packages("DEoptimR"); require(DEoptimR)}
 set.seed(370)
-install.packages("ModelMetrics")
-install.packages("recipes")
-install.packages("DEoptimR")
 
 ```
-Yuxing
+# Yuxing => read data
 ```{r}
 baseline <- read.csv(file = '/Users/eunicewu/Documents/INFO370/project-fragile-families/data/Baseline_Features.csv')
 year1 <- read.csv(file = '/Users/eunicewu/Documents/INFO370/project-fragile-families/data/Year1_Features.csv')
@@ -30,7 +22,7 @@ year5 <- read.csv(file = '/Users/eunicewu/Documents/INFO370/project-fragile-fami
 year9 <- read.csv(file = '/Users/eunicewu/Documents/INFO370/project-fragile-families/data/Year9_Features.csv')
 ```
 
-Jared
+# Jared => read data
 ```{r}
 baseline <- read.csv(file="/Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/Baseline_Features.csv",header=TRUE,sep=",")
 year1 <- read.csv(file="/Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/Year1_Features.csv", header=TRUE,sep=",")
@@ -42,30 +34,35 @@ year9 <- read.csv(file="/Users/jaredpraino/Documents/University of Washington/Se
 
 
 ```{r}
+##  HAND SELECTED FEATURES OF CURIOUSITY
+#   FILTERED TO CONTAIN ONLY VALID AND MEANINGFUL RESPONSES
 
-## Combining data for all years
-#View(year9)
-
+# BASELINE
 combine0 <- baseline %>% select(idnum, m1a4, m1a11a, m1a11b) %>% 
   filter(idnum>-1, m1a4>-1, m1a11a>-1, m1a11b>-1)
 
+# YEAR 1
 combine1 <- year1 %>% select(idnum,m2b18a,m2b18b,m2b18c,m2b18d,m2b18e,m2b18f,m2b18g,m2b18h,m2c3a,m2c3b, m2c3c,m2c3d,m2c3e,m2c3f,m2c3h,m2c3i,m2c3j) %>%    filter(m2b18a>-1,m2b18b>-1,m2b18c>-1,m2b18d>-1,m2b18e>-1,m2b18f>-1,m2b18g>-1,m2b18h>-1,m2c3a>-1,m2c3b>-1, m2c3c>-1,m2c3d>-1,m2c3e>-1,m2c3f>-1,m2c3h>-1,m2c3i>-1,m2c3j>-1)
 
+# YEAR 3
 combine3 <- year3 %>% select(idnum,m3b4a,m3b4b,m3b4c,m3b4d,m3b4e,m3b4f,m3b4g,m3b4h,m3b4i,m3b4k,m3b4l,m3b5,m3c3a,m3c3b,m3c3c,m3c3d,m3c3e,m3c3f,m3c3g,m3c3h,m3c3i,m3c3j,m3c3k,m3c3l) %>% 
   filter(m3b4a>-1,m3b4b>-1,m3b4c>-1,m3b4d>-1,m3b4e>-1,m3b4f>-1,m3b4g>-1,m3b4h>-1,m3b4i>-1,m3b4k>-1,m3b4l>-1,m3b5>-1,m3c3a>-1,m3c3b>-1,m3c3c>-1,m3c3d>-1,m3c3e>-1,m3c3f>-1,m3c3g>-1,m3c3h>-1,m3c3i>-1,m3c3j>-1,m3c3k>-1,m3c3l>-1)
 
+# YEAR 5
 combine5 <- year5 %>% select(idnum,m4b4a1,m4b4a2,m4b4a3,m4b4a4,m4b4a5,m4b4a6,m4b4a7,m4b4a8) %>% 
   filter(m4b4a1>-1,m4b4a2>-1,m4b4a3>-1,m4b4a4>-1,m4b4a5>-1,m4b4a6>-1,m4b4a7>-1,m4b4a8>-1)
 
+# YEAR 9
 combine9 <- year9 %>% select(idnum,t5c13a,t5c13b,t5c13c) %>% 
   filter(t5c13a>-1,t5c13b>-1,t5c13c>-1)
 
+# JOIN EACH SELECTED FEATURE ON FAMILY ID
 join1 <- inner_join(combine0,combine1, by="idnum")
 join2 <- inner_join(join1,combine3, by="idnum")
 join3 <- inner_join(join2,combine5, by="idnum")
 finalCombined <- inner_join(join3,combine9, by="idnum")
 
-# add outcome variables
+# ADD OUTCOME VARIABLES
 finalCombined$t5c13a <- as.factor(finalCombined$t5c13a)
 finalCombined$t5c13b <- as.factor(finalCombined$t5c13b)
 finalCombined$t5c13c <- as.factor(finalCombined$t5c13c)
@@ -75,7 +72,7 @@ finalCombined$t5c13c <- as.factor(finalCombined$t5c13c)
 
 
 ```{r}
-## Automatic Feature Selection
+## Automatic Feature Selection With Cross Validation
 # control using random forest
 control <- rfeControl(functions = rfFuncs, method="cv", number=5)
 results <- rfe(finalCombined[,2:53], finalCombined[,56], sizes = c(1:52), rfeControl = control) # this will take AWHILE
@@ -84,21 +81,15 @@ ggplot(results)
 
 # chosen features
 predictors(results)
-
-```
-Select the most important features (up to 10) and use only those parameters moving forward
-```{r}
-
 selected_features <- predictors(results)[1:10] 
 selected_features
 ```
-
-
 ## Ranking features by importance
 Rank features by importance using K-Nearest Neighbors (KNN). Plot the performance
 - Use a k-fold cross-validation ("repeatedcv") with k=5 folds, repeated 3 times for control.
-```{r}
 
+```{r}
+# Repeated Cross validation for feature selection
 control <- trainControl(method="repeatedcv", number = 5, repeats = 3)
 finalCombined$t5c13a <- NULL
 finalCombined$t5c13b <- NULL

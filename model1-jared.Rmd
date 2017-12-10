@@ -1,15 +1,12 @@
 Jared
 ```{R}
-library(dplyr)
 if(!require(mlbench)){install.packages("mlbench"); require(mlbench)} # common datasets to use
 if(!require(caret)){install.packages("caret", dependencies = c("Depends", "Suggests")); require(caret)} # ML package and its dependencies. This will take awhile!
 if(!require(dplyr)){install.packages("dplyr"); require(dplyr)}
+if(!require(ModelMetrics)){install.packages("ModelMetrics"); require(ModelMetrics)}
+if(!require(recipes)){install.packages("recipes"); require(recipes)}
+if(!require(DEoptimR)){install.packages("DEoptimR"); require(DEoptimR)}
 set.seed(370)
-if(!require(ModelMetrics)){install.packages("ModelMetrics"); require(ModelMetrics)} # common datasets to use
-if(!require(recipes)){install.packages("recipes"); require(recipes)} # common datasets to use
-if(!require(DEoptimR)){install.packages("DEoptimR"); require(DEoptimR)} # common datasets to use
-
-
 
 
 ```
@@ -111,17 +108,23 @@ parent_involvement <- parent_involvement %>% mutate(percentage = tally/11.0)
 library(ggplot2)
 # ## GRAPHS
 # Involvement by math
-ggplot(data = parent_involvement, aes(x = t5c13c, y = tally)) + geom_point() + geom_jitter(width = 0.2)
+ggplot(data = parent_involvement, aes(x = t5c13c, y = tally)) + geom_point() + geom_jitter(width = 0.2) +
+  geom_smooth(method = "lm", color="black", aes(group=1))
 
 # Involvment by reading
-ggplot(data = parent_involvement, aes(x = t5c13a, y = tally)) + geom_point() + geom_jitter(width = 0.2)
+ggplot(data = parent_involvement, aes(x = t5c13a, y = tally)) + geom_point() + geom_jitter(width = 0.2) +
+  geom_smooth(method = "lm", color="black", aes(group=1))
 
 # Involvement by science
-ggplot(data = parent_involvement, aes(x = t5c13b, y = tally)) + geom_point() + geom_jitter(width = 0.2)
+ggplot(data = parent_involvement, aes(x = t5c13b, y = tally)) + geom_point() + geom_jitter(width = 0.2) +
+  geom_smooth(method = "lm", color="black", aes(group=1))
 
 
 #Involvement total score
-ggplot(data = parent_involvement, aes(x = score, y = percentage)) + geom_point() + geom_jitter(width = 0.2)
+ggplot(data = parent_involvement, aes(x = score, y = tally)) + geom_point() + geom_jitter(width = 0.2) +
+  geom_smooth(method = "lm", color="black", aes(group=1))
+
+cor(parent_involvement$score,parent_involvement$tally)
 
 
 
@@ -137,6 +140,9 @@ ggplot(data = parent_involvement, aes(x = score, y = percentage)) + geom_point()
 
 # Our predictor variables
 features2 <- c('f1g9a',	'f1g9b',	'f1g9c',	'f1g9d',	'f1g9e',	'f1g9f',	'f1g9g',	'f1g9h',	'f1g9i',	'f1g9j',	'f1g9k',	'f1g9l','m2b18a',	'm2b18b',	'm2b18c',	'm2b18d',	'm2b18e',	'm2b18f',	'm2b18g',	'm2b18h','m2c3a','m3b4a',	'm3b4b',	'm3b4c',	'm3b4d',	'm3b4e',	'm3b4f',	'm3b4g',	'm3b4h',	'm3b4i',	'm3b4j',	'm3b4k',	'm3b4l',	'm3b4m','m3c3a','m3c3b',	'm3c3c',	'm3c3d',	'm3c3e',	'm3c3f',	'm3c3g',	'm3c3h',	'm3c3i',	'm3c3j',	'm3c3k',	'm3c3l',	'm3c3m','f3c3a',	'f3c3b',	'f3c3c',	'f3c3d',	'f3c3e',	'f3c3f',	'f3c3g',	'f3c3h',	'f3c3i',	'f3c3j',	'f3c3k',	'f3c3l',	'f3c3m','f3b4a',	'f3b4b',	'f3b4c',	'f3b4d',	'f3b4e',	'f3b4f',	'f3b4g',	'f3b4h',	'f3b4i',	'f3b4j',	'f3b4k',	'f3b4l',	'f3b4m','m4c3a',	'm4c3b',	'm4c3c',	'm4c3d',	'm4c3e',	'm4c3f','m4c3g',	'm4c3h','f4b4a1',	'f4b4a2',	'f4b4a3',	'f4b4a4',	'f4b4a5',	'f4b4a6',	'f4b4a7',	'f4b4a8',	'f4c3a',	'f4c3b',	'f4c3c',	'f4c3d',	'f4c3e',	'f4c3f',	'f4c3g',	'f4c3h','f2b36a',	'f2b36b',	'f2b36c',	'f2b36d',	'f2b36e',	'f2b36f',	'f2b36g',	'f2b36h',	'f2c3a',	'f2c3b',	'f2c3c',	'f2c3d',	'f2c3e',	'f2c3f',	'f2c3g',	'f2c3h',	'f2c3i',	'f2c3j','m2c3b',	'm2c3c',	'm2c3d',	'm2c3e',	'm2c3f',	'm2c3g',	'm2c3h',	'm2c3i',	'm2c3j')
+
+
+
 
 parent_involvement2 <- read.csv("/Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/FeaturesSelected.csv")
 
@@ -159,7 +165,7 @@ parent_involvement2[parent_involvement2<0] <- NA
 combine9_2 <- year9 %>% select(idnum,t5c13a,t5c13b,t5c13c) %>% 
   filter(t5c13a>-1,t5c13b>-1,t5c13c>-1)
 combine9_2 <- combine9 %>% mutate(score=t5c13a + t5c13b + t5c13c)
-
+#temp_save_df <- parent_involvement2
 
 combine9_2$t5c13a <- as.factor(combine9_2$t5c13a)
 combine9_2$t5c13b <- as.factor(combine9_2$t5c13b)
@@ -171,20 +177,14 @@ parent_involvement2 <- inner_join(combine9_2, parent_involvement2, by="idnum")
 parent_involvement2 <- parent_involvement2 %>% mutate(tally = 0)
 
 
-
-
-
-
-
-# ##  FUNCTIONS
-# convert 
-# -6 to 0
-# apply to c()
-##c('m2b28','f2b24','m3b11','f3b11')
-
-parent_involvement2 <- parent_involvement3
+#temp_save_df <- inner_join(combine9_2, parent_involvement2, by="idnum")
+#temp_save_df_2 <- inner_join(combine9_2, parent_involvement2, by="idnum")
+#temp_save_df <- temp_save_df %>% mutate(tally = 0)
+#temp_save_df_2 <- temp_save_df_2 %>% mutate(tally = 0)
 
 View(parent_involvement2)
+
+# function for determining effort to tally activity and then tallying.
 computed_mean2 <- function(column) {
    
   response <- na.omit(parent_involvement2[[column_name]])
@@ -192,33 +192,44 @@ computed_mean2 <- function(column) {
   
   fltr <- response > weighted_mean
   parent_involvement2[fltr,"tally"] <- parent_involvement2[fltr,"tally"] + 1
-  print(weighted_mean)
   return(parent_involvement2)
 }
 
 
+
+
+
+
+
+# Add tallies for doing activities
 for(i in 1:length(features2)){
-  column_name = features[i]
+  column_name = features2[i]
   parent_involvement2 <- computed_mean2(column_name)
 }
+# check data
+View(parent_involvement2)
 
 
-
-parent_involvement2$score
-length <- length(features2)
 parent_involvement2 <- parent_involvement2 %>% mutate(percentage = tally/124.0)
 
-ggplot(data = parent_involvement2, aes(x = t5c13c, y = tally)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot() +labs(title="Math Performance v Parent Activity Count", x="Performance in Math", y="# of Parent Activities") + scale_x_discrete(labels=c("Far Below Average","Below Average","Average","Above Average","Far Above Average"))
+#parent_involvement2 <- as.numeric(parent_involvement2$tally)
+#parent_involvement2 <- as.numeric(parent_involvement2$t5c13c)
+
+ggplot(data = parent_involvement2, aes(x = t5c13c, y = tally)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot() +labs(title="Math Performance v Parent Activity Count", x="Performance in Math at Year 9", y="# of Parent Activities") + scale_x_discrete(labels=c("Far Below Average","Below Average","Average","Above Average","Far Above Average")) +
+  geom_smooth(method = "lm", se=FALSE, color="black", aes(group=1))
+
 
 # Involvment by reading
-ggplot(data = parent_involvement2, aes(x = t5c13a, y = tally)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot() +labs(title="Reading Performance v Parent Activity Count", x="Performance in Reading", y="# of Parent Activities")+  scale_x_discrete(labels=c("Far Below Average","Below Average","Average","Above Average","Far Above Average"))
+ggplot(data = parent_involvement2, aes(x = t5c13a, y = tally)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot() +labs(title="Reading Performance v Parent Activity Count", x="Performance in Reading at Year 9", y="# of Parent Activities")+  scale_x_discrete(labels=c("Far Below Average","Below Average","Average","Above Average","Far Above Average"))+
+  geom_smooth(method = "lm", se=FALSE, color="black", aes(group=1))
 
 # Involvement by science
-ggplot(data = parent_involvement2, aes(x = t5c13b, y = tally)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot() +labs(title="Science Performance v Parent Activity Count", x="Performance in Science", y="# of Parent Activities")+ scale_x_discrete(labels=c("Far Below Average","Below Average","Average","Above Average","Far Above Average"))
+ggplot(data = parent_involvement2, aes(x = t5c13b, y = tally)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot() +labs(title="Science Performance v Parent Activity Count", x="Performance in Science at Year 9", y="# of Parent Activities")+ scale_x_discrete(labels=c("Far Below Average","Below Average","Average","Above Average","Far Above Average"))+
+  geom_smooth(method = "lm", se=FALSE, color="black", aes(group=1))
 
 
 #Involvement total score
-ggplot(data = parent_involvement2, aes(x = score, y = tally)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot() +labs(title="Total Performance v Parent Activity Count", x="School Performance", y="# of Parent Activities")  + scale_x_discrete(labels=c("Far Below Average","","","Below Average","","","Average","","","Above Average","","","Far Above Average"))
+ggplot(data = parent_involvement2, aes(x = score, y = tally)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot() +labs(title="Total Performance v Parent Activity Count", x="School Performance at Year 9", y="# of Parent Activities")  + scale_x_discrete(labels=c("Far Below Average","","","Below Average","","","Average","","","Above Average","","","Far Above Average"))+ geom_smooth(method = "lm", se=FALSE, color="black", aes(group=1))
 
 
 
@@ -233,9 +244,79 @@ install_github("easyGgplot2", "kassambara")
 library(easyGgplot2)
 
 
-ggplot2.violinplot(data=parent_involvement2, xName='score',yName='tally', addDot=TRUE)
+ggplot2.violinplot(data=parent_involvement2, xName='score',yName='tally', addDot=FALSE, addMean=TRUE) + labs(title="Total Performance v Parent Activity Count", x="Total Performance", y="# of Parent Activities") + scale_x_discrete(labels=c("Far Below Average","","","Below Average","","","Average","","","Above Average","","","Far Above Average"))
+
+
+if(!require(rpart.plot)){install.packages("rpart.plot"); require(rpart.plot)} # only need this is dependencies of caret were not installed
+ctrl <- trainControl(method = 'cv', number=5)
+model_dec_tree <- train(t5c13c ~ ., 
+                        data = parent_involvement2,
+                        method = "rpart",
+                        trControl = ctrl,
+                        tuneLength = 10) # try 10 reasonable parameter values. No more guessing parameter ranges!
+
+model_dec_tree
+
+# looking at decision tree
+prp(parent_involvement2$t5c13c)
+
+# predictions using model
+predict_iris <- predict(model_dec_tree, newdata = iris_test_x)
+
+# performance (via confusion matrix)
+confusionMatrix(predict_iris, iris_test_y$Species)
+
+
+```
 
 
 
+```{r}
+finalSet <- read.csv("/Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/FeaturesWithYear9Year5MartialStatus.csv")
+
+features_year_5 <- c('m4b4a2','m3c3l','m4b4a8','m3b4l','m3b4a','m2c3j','m2c3f','m3c3g','m2c3e','m3b4d','m2c3a')
+
+year9grades <- filter(finalSet, t5c13a>-1, t5c13b>-1,t5c13c>-1)
+year5grades <- filter(finalSet, kind_a5>-1, kind_a6>-1, kind_a7>-1)
+
+year5grades <- year5grades %>% mutate(tally = 0)
+# total grade
+year5grades <- year5grades %>% mutate(scoreKind = t5c13a + t5c13b + t5c13c)
+# add outcome variables
+year5grades$t5c13a <- as.factor(year5grades$t5c13a)
+year5grades$t5c13b <- as.factor(year5grades$t5c13b)
+year5grades$t5c13c <- as.factor(year5grades$t5c13c)
+
+year5grades[year5grades==205] <- 0
+year5grades[year5grades==204] <- 1
+year5grades[year5grades==203] <- 2
+year5grades[year5grades==202] <- 3
+year5grades[year5grades==201] <- 7
+# remove negative values
+year5grades[year5grades<0] <- NA
+
+
+computed_mean_year_5 <- function(column) {
+   
+  response <- na.omit(year5grades[[column_name]])
+  weighted_mean <- (sum(response==0)*0 + sum(response==1)*1 + sum(response==2)*2 + sum(response==3)*3 + sum(response==4)*4 +       sum(response==5)*5 + sum(response==6)*6 +sum(response==7)*7)/length(response)
+  
+  fltr <- response > weighted_mean
+  year5grades[fltr,"tally"] <- year5grades[fltr,"tally"] + 1
+  return(year5grades)
+}
+
+
+# Add tallies for doing activities
+for(i in 1:length(features_year_5)){
+  column_name = features_year_5[i]
+  year5grades <- computed_mean_year_5(column_name)
+}
+View(year5grades$tally)
+
+ggplot(data = year5grades, aes(x = scoreKind, y = tally)) + geom_point() + geom_jitter(width = 0.2) +
+  geom_smooth(method = "lm", color="black", aes(group=1))
+
+cor(year5grades$score,year5grades$tally)
 
 ```
