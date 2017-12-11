@@ -12,6 +12,7 @@ set.seed(370)
 ```
 
 ```{r}
+#Read in data
 baseline <- read.csv(file="/Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/Baseline_Features.csv",header=TRUE,sep=",")
 year1 <- read.csv(file="/Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/Year1_Features.csv", header=TRUE,sep=",")
 year3 <- read.csv(file="/Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/Year3_Features.csv",header=TRUE,sep=",")
@@ -19,9 +20,8 @@ year5 <- read.csv(file="/Users/jaredpraino/Documents/University of Washington/Se
 year9 <- read.csv(file="/Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/Year9_Features.csv",header=TRUE,sep=",")
 ```
 
-
-
 ```{r}
+#Select top 56 features and remove missing values
 temp_parent_involvement <- year9 %>% select(idnum,t5c13a,t5c13b,t5c13c) 
 
 #View(year9)
@@ -57,6 +57,15 @@ parent_involvement <- parent_involvement %>% mutate(score = t5c13a + t5c13b + t5
 parent_involvement$t5c13a <- as.factor(parent_involvement$t5c13a)
 parent_involvement$t5c13b <- as.factor(parent_involvement$t5c13b)
 parent_involvement$t5c13c <- as.factor(parent_involvement$t5c13c)
+
+
+#Subsets with grades from year 5 and year 9 isolated
+finalSet <- read.csv(file="/Users/grant/Documents/INFO370/fragile_families/project-fragile-families/data/FeaturesWithYear9Year5MartialStatus.csv")
+
+
+library(dplyr)
+year9grades <- filter(finalSet, t5c13a>-1, t5c13b>-1, t5c13c>-1)
+year5grades <- filter(finalSet, kind_a5>-1, kind_a6>-1, kind_a7>-1)
 ```
 
 
@@ -102,98 +111,71 @@ for(i in 1:length(features)){
 # Percentage of activities
 length <- length(features)
 parent_involvement <- parent_involvement %>% mutate(percentage = tally/11.0)
-
-
-
-library(ggplot2)
-# ## GRAPHS
-# Involvement by math
-ggplot(data = parent_involvement, aes(x = t5c13c, y = tally)) + geom_point() + geom_jitter(width = 0.2) +
-  geom_smooth(method = "lm", color="black", aes(group=1))
-
-# Involvment by reading
-ggplot(data = parent_involvement, aes(x = t5c13a, y = tally)) + geom_point() + geom_jitter(width = 0.2) +
-  geom_smooth(method = "lm", color="black", aes(group=1))
-
-# Involvement by science
-ggplot(data = parent_involvement, aes(x = t5c13b, y = tally)) + geom_point() + geom_jitter(width = 0.2) +
-  geom_smooth(method = "lm", color="black", aes(group=1))
-
-
-#Involvement total score
-ggplot(data = parent_involvement, aes(x = score, y = tally)) + geom_point() + geom_jitter(width = 0.2) +
-  geom_smooth(method = "lm", color="black", aes(group=1))
-
-cor(parent_involvement$score,parent_involvement$tally)
-
-
-
 ```
 
+
 ```{r}
-#barplot for days per week playing imaginary games with child
-test.baselineYear9 <- select(combine4, t5c13c, m3b4e) %>% filter(t5c13c > -1, m3b4e > -1, t5c13c < 7)
+#synthesize marital status to M (married) and D (divorced). This finished set can be found under data/FeaturesWithYear9Year5MartialStatus.csv"
+marriageCol5 <- ifelse(year5grades$m4a4 == 1, "Married",
+                ifelse(year5grades$m4a4 == 2, "Married",
+                ifelse(year5grades$m4a4 == 3, "Divorced",
+                ifelse(year5grades$m4a4 == 4, "Divorced",
+                ifelse(year5grades$m4a4 == 5, "Divorced",
+                ifelse(year5grades$m4a4 == 6, "Divorced", NA))))))
+
+marriageCol9 <- ifelse(year9grades$m5a4 == 1, "Married",
+                ifelse(year9grades$m5a4 == 2, "Married",
+                ifelse(year9grades$m5a4 == 3, "Divorced",
+                ifelse(year9grades$m5a4 == 4, "Divorced",
+                ifelse(year9grades$m5a4 == 5, "Divorced",
+                ifelse(year9grades$m5a4 == 6, "Divorced", NA))))))
 
 
-day1 <- filter(test.baselineYear9, m3b4e == 1)
-dfDay1 <- table(day1)
+year5grades$marrystat <- marriageCol5
 
-day2 <- filter(test.baselineYear9, m3b4e == 2)
-dfDay2 <- table(day2)
+year9grades$marrystat <- marriageCol9
 
-day3 <- filter(test.baselineYear9, m3b4e == 3)
-dfDay3 <- table(day3)
+#Change school performance to a binary value, 0 for below average, 1 for above average
 
-day4 <- filter(test.baselineYear9, m3b4e == 4)
-dfDay4 <- table(day4)
+year9gradesHighLow <- year9grades
 
-day5 <- filter(test.baselineYear9, m3b4e == 5)
-dfDay5 <- table(day5)
+year9gradesHighLow <- year9gradesHighLow %>% filter(t5c13c != 3, t5c13a != 3, t5c13b != 3)
 
-day6 <- filter(test.baselineYear9, m3b4e == 6)
-dfDay6 <- table(day6)
+year9gradesHighLow$abovebelowMath <- ifelse(year9gradesHighLow$t5c13c == 1, 0,
+                                      ifelse(year9gradesHighLow$t5c13c == 2, 0,
+                                      ifelse(year9gradesHighLow$t5c13c == 4, 1,
+                                      ifelse(year9gradesHighLow$t5c13c == 5, 1,
+                                             -1
+                                      ))))
+year9gradesHighLow$abovebelowReading <- ifelse(year9gradesHighLow$t5c13a == 1, 0,
+                                      ifelse(year9gradesHighLow$t5c13a == 2, 0,
+                                      ifelse(year9gradesHighLow$t5c13a == 4, 1,
+                                      ifelse(year9gradesHighLow$t5c13a == 5, 1,
+                                             -1
+                                      ))))
+year9gradesHighLow$abovebelowScience <- ifelse(year9gradesHighLow$t5c13b == 1, 0,
+                                      ifelse(year9gradesHighLow$t5c13b == 2, 0,
+                                      ifelse(year9gradesHighLow$t5c13b == 4, 1,
+                                      ifelse(year9gradesHighLow$t5c13b == 5, 1,
+                                             -1
+                                             ))))
+year9gradesHighLow$abovebelowScore <- ifelse(year9gradesHighLow$score == 1, 0,
+                                      ifelse(year9gradesHighLow$score == 2, 0,
+                                      ifelse(year9gradesHighLow$score == 3, 0,
+                                      ifelse(year9gradesHighLow$score == 4, 0,
+                                      ifelse(year9gradesHighLow$score == 5, 0,
+                                      ifelse(year9gradesHighLow$score == 6, 0,
+                                      ifelse(year9gradesHighLow$score == 7, 0,
+                                      ifelse(year9gradesHighLow$score == 9, 1,
+                                      ifelse(year9gradesHighLow$score == 10, 1,
+                                      ifelse(year9gradesHighLow$score == 11, 1,
+                                      ifelse(year9gradesHighLow$score == 12, 1,
+                                      ifelse(year9gradesHighLow$score == 13, 1,
+                                      ifelse(year9gradesHighLow$score == 14, 1,
+                                      ifelse(year9gradesHighLow$score == 15, 1, NA))))))))))))))
 
-day7 <- filter(test.baselineYear9, m3b4e == 7)
-dfDay7 <- table(day7)
-
-View(newdf)
-
-barplot(height = dfDay2, beside = T, col=c("aquamarine3","coral", "red", "blue", "green"))
-legend("topleft", c("far below average", "below average", "average", "above average", "far above average"), pch=15, 
-       col=c("aquamarine3","coral", "red", "blue", "green"), 
-       bty="n")
-
-barplot(height = dfDay3, beside = T, col=c("aquamarine3","coral", "red", "blue", "green"))
-legend("topleft", c("far below average", "below average", "average", "above average", "far above average"), pch=15, 
-       col=c("aquamarine3","coral", "red", "blue", "green"), 
-       bty="n")
-
-barplot(height = dfDay4, beside = T, col=c("aquamarine3","coral", "red", "blue", "green"))
-legend("topleft", c("far below average", "below average", "average", "above average", "far above average"), pch=15, 
-       col=c("aquamarine3","coral", "red", "blue", "green"), 
-       bty="n")
-
-barplot(height = dfDay5, beside = T, col=c("aquamarine3","coral", "red", "blue", "green"))
-legend("topleft", c("far below average", "below average", "average", "above average", "far above average"), pch=15, 
-       col=c("aquamarine3","coral", "red", "blue", "green"), 
-       bty="n")
-
-barplot(height = dfDay6, beside = T, col=c("aquamarine3","coral", "red", "blue", "green"))
-legend("topleft", c("far below average", "below average", "average", "above average", "far above average"), pch=15, 
-       col=c("aquamarine3","coral", "red", "blue", "green"), 
-       bty="n")
-
-barplot(height = dfDay7, beside = T, col=c("aquamarine3","coral", "red", "blue", "green"))
-legend("topleft", c("far below average", "below average", "average", "above average", "far above average"), pch=15, 
-       col=c("aquamarine3","coral", "red", "blue", "green"), 
-       bty="n")
-
-ggplot(data = as.data.frame(newdf), aes(m3b4e, t5c13c, size = Freq, color = Freq)) + geom_point() +
-scale_color_gradient(low="blue", high="red") 
-
-#linear model for best feature against math score
-linear_model <- lm(t5c13c ~ m3c3h, data=test.baselineYear9)
-linear_model
+#remove NA values
+year9gradesHighLow <- year9gradesHighLow[!is.na(year9gradesHighLow$score), ]
 ```
 
 
@@ -275,34 +257,12 @@ parent_involvement2 <- parent_involvement2 %>% mutate(percentage = tally/124.0)
 #parent_involvement2 <- as.numeric(parent_involvement2$tally)
 #parent_involvement2 <- as.numeric(parent_involvement2$t5c13c)
 
-ggplot(data = parent_involvement2, aes(x = t5c13c, y = tally)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot() +labs(title="Math Performance v Parent Activity Count", x="Performance in Math at Year 9", y="# of Parent Activities") + scale_x_discrete(labels=c("Far Below Average","Below Average","Average","Above Average","Far Above Average")) +
-  geom_smooth(method = "lm", se=FALSE, color="black", aes(group=1))
 
-
-# Involvment by reading
-ggplot(data = parent_involvement2, aes(x = t5c13a, y = tally)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot() +labs(title="Reading Performance v Parent Activity Count", x="Performance in Reading at Year 9", y="# of Parent Activities")+  scale_x_discrete(labels=c("Far Below Average","Below Average","Average","Above Average","Far Above Average"))+
-  geom_smooth(method = "lm", se=FALSE, color="black", aes(group=1))
-
-# Involvement by science
-ggplot(data = parent_involvement2, aes(x = t5c13b, y = tally)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot() +labs(title="Science Performance v Parent Activity Count", x="Performance in Science at Year 9", y="# of Parent Activities")+ scale_x_discrete(labels=c("Far Below Average","Below Average","Average","Above Average","Far Above Average"))+
-  geom_smooth(method = "lm", se=FALSE, color="black", aes(group=1))
-
-
-#Involvement total score
-ggplot(data = parent_involvement2, aes(x = score, y = tally)) + geom_point() + geom_jitter(width = 0.2) + geom_boxplot() +labs(title="Total Performance v Parent Activity Count", x="School Performance at Year 9", y="# of Parent Activities")  + scale_x_discrete(labels=c("Far Below Average","","","Below Average","","","Average","","","Above Average","","","Far Above Average"))+ geom_smooth(method = "lm", se=FALSE, color="black", aes(group=1))
 
 ```
 
 ``` {r}
-install.packages("devtools")
-library(devtools)
-install_github("easyGgplot2", "kassambara")
-
-library(easyGgplot2)
-
-#violin plot for total score
-ggplot2.violinplot(data=parent_involvement2, xName='score',yName='tally', addDot=FALSE, addMean=TRUE) + labs(title="Total Performance v Parent Activity Count", x="Total Performance", y="# of Parent Activities") + scale_x_discrete(labels=c("Far Below Average","","","Below Average","","","Average","","","Above Average","","","Far Above Average"))
-
+#Decision tree and confusion matrix
 
 if(!require(rpart.plot)){install.packages("rpart.plot"); require(rpart.plot)} # only need this is dependencies of caret were not installed
 ctrl <- trainControl(method = 'cv', number=5)
@@ -322,13 +282,13 @@ predict_iris <- predict(model_dec_tree, newdata = iris_test_x)
 
 # performance (via confusion matrix)
 confusionMatrix(predict_iris, iris_test_y$Species)
-
-
 ```
 
 
 
 ```{r}
+#Clean year 5 data
+
 finalSet <- read.csv("/Users/jaredpraino/Documents/University of Washington/Senior Year/INFO370/final_project/project-fragile-families/data/FeaturesWithYear9Year5MartialStatus.csv")
 
 features_year_5 <- c('m4b4a2','m3c3l','m4b4a8','m3b4l','m3b4a','m2c3j','m2c3f','m3c3g','m2c3e','m3b4d','m2c3a')
